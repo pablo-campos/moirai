@@ -16,7 +16,7 @@ import {
   type OnConnectStartParams,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Minus, Plus, Maximize2 } from 'lucide-react';
+import { Minus, Plus, Maximize2, MousePointerClick } from 'lucide-react';
 import { useDiagramStore } from '../../store/diagramStore';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { getComponentByType } from '../registry';
@@ -442,6 +442,18 @@ const CanvasInner: React.FC = () => {
           />
         )}
       </ReactFlow>
+
+      {nodes.length === 0 && (
+        <div className="empty-canvas-hint">
+          <div className="empty-hint-card">
+            <MousePointerClick size={22} className="empty-hint-icon" />
+            <span className="empty-hint-title">Empty Canvas</span>
+            <span className="empty-hint-subtitle">
+              Drag components from the left palette to start
+            </span>
+          </div>
+        </div>
+      )}
 
       {contextMenu && (
         <ContextMenu

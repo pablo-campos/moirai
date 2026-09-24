@@ -1,7 +1,7 @@
 # Progress
 
 ## Current Status
-- **Current Phase**: Phase 7: Editor essentials
+- **Current Phase**: Phase 8: Import/export and polish
 - **Status**: Completed
 
 ## Phase Log
@@ -114,4 +114,21 @@
   - Styled helper lines, context menu, modal, and shortcuts in `src/theme/theme.css` using theme CSS variables.
   - Validated `npm run build` and `npm run check:colors` pass with zero errors.
   - Verified in browser at http://localhost:5173 that shortcuts, alignment lines, context menu, autosave/restore, and diagram resets work correctly.
+- **Known Issues**: None.
+
+### Phase 8: Import/export and polish
+- **What was done**:
+  - Implemented export utilities in `src/lib/exportImage.ts`:
+    - `exportDiagramAsPng`: High-resolution 2x PNG rendering with current theme background and bounding box viewport bounds via `html-to-image` and `@xyflow/react`.
+    - `exportDiagramAsSvg`: Vector SVG export with diagram bounding box.
+    - `exportDiagramAsJson`: Full diagram serialization (nodes, edges, canvas settings, version).
+    - `validateAndParseDiagramJson`: Schema validation with descriptive error feedback on malformed files.
+  - Added TopBar Export/Import dropdown menu in `src/components/layout/TopBar.tsx` with PNG (2x), SVG, JSON export, and JSON file import.
+  - Added Import Error modal with descriptive error messages.
+  - Implemented Empty Canvas onboarding hint ("Drag components from the left palette to start") in `src/components/canvas/Canvas.tsx`.
+  - Polished consistent 8px spacing, focus rings with `var(--accent)`, 150ms transitions, and palette tooltips.
+  - Styled export menus, modals, and empty state cards in `src/theme/theme.css` strictly using CSS variables.
+  - Validated `npm run build` and `npm run check:colors` pass with zero errors.
+  - Verified local production preview (`npm run preview`) runs with zero errors.
+  - Verified in browser at http://localhost:5173 that empty canvas hints, PNG/SVG/JSON export, JSON import, and dark/light themes work cleanly.
 - **Known Issues**: None.

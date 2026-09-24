@@ -99,6 +99,11 @@ export interface DiagramState {
   deselectAll: () => void;
   nudgeSelected: (dx: number, dy: number) => void;
   clearDiagram: () => void;
+  importDiagram: (data: {
+    nodes: Node[];
+    edges: Edge[];
+    canvasSettings?: CanvasSettings;
+  }) => void;
 }
 
 const initialSavedData = loadDiagram();
@@ -581,6 +586,28 @@ export const useDiagramStore = create<DiagramState>()(
           nodes: [],
           edges: [],
           isArrowMode: false,
+        });
+        useDiagramStore.temporal.getState().clear();
+      },
+      importDiagram: (data) => {
+        const nextNodes = data.nodes.map((n) => ({ ...n, selected: false }));
+        const nextEdges = data.edges.map((e) => ({ ...e, selected: false }));
+        const nextSettings = data.canvasSettings
+          ? { ...get().canvasSettings, ...data.canvasSettings }
+          : get().canvasSettings;
+
+        set({
+          nodes: nextNodes,
+          edges: nextEdges,
+          canvasSettings: nextSettings,
+          isArrowMode: false,
+        });
+
+        // Save immediately and reset history
+        saveDiagram({
+          nodes: nextNodes,
+          edges: nextEdges,
+          canvasSettings: nextSettings,
         });
         useDiagramStore.temporal.getState().clear();
       },
