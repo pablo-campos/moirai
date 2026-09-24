@@ -309,13 +309,167 @@ button {
   background-color: var(--bg-canvas);
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.canvas-placeholder {
-  color: var(--text-muted);
-  font-size: 14px;
-  user-select: none;
+/* React Flow Theme Overrides */
+.diagram-react-flow {
+  width: 100%;
+  height: 100%;
+  --xy-edge-stroke: var(--edge);
+  --xy-edge-stroke-default: var(--edge);
+  --xy-node-background-color: var(--node-fill);
+  --xy-node-border-default: 1px solid var(--border);
+  --xy-node-border-radius-default: 8px;
+  --xy-node-color-default: var(--text-primary);
+  --xy-selection-background-color: var(--accent-soft);
+  --xy-selection-border-color: var(--selection);
+  --xy-handle-background-color: var(--accent);
+  --xy-handle-border-color: var(--bg-panel);
+  --xy-minimap-background-color: var(--bg-panel);
+  --xy-minimap-mask-background-color: var(--bg-hover);
+  --xy-minimap-mask-stroke-color: var(--border);
+  --xy-minimap-node-background-color: var(--swatch-neutral);
+  --xy-minimap-node-stroke-color: var(--border);
+  background-color: var(--bg-canvas);
+}
+
+/* React Flow Nodes & Selection */
+.react-flow__node {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.react-flow__node-default,
+.react-flow__node-input,
+.react-flow__node-output {
+  background-color: var(--node-fill);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  box-shadow: var(--shadow);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.react-flow__node-default.selected,
+.react-flow__node-default:focus,
+.react-flow__node-default:focus-visible,
+.react-flow__node.selected {
+  border-color: var(--selection);
+  box-shadow: 0 0 0 1px var(--selection), var(--shadow);
+}
+
+.react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent);
+  border: 1px solid var(--bg-panel);
+  border-radius: 50%;
+}
+
+.react-flow__selection {
+  background-color: var(--accent-soft);
+  border: 1px dashed var(--selection);
+  border-radius: 4px;
+}
+
+.react-flow__nodesselection-rect {
+  background-color: var(--accent-soft);
+  border: 1px dashed var(--selection);
+  border-radius: 4px;
+}
+
+.react-flow__edge-path {
+  stroke: var(--edge);
+  stroke-width: 1.5;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--selection);
+  stroke-width: 2;
+}
+
+/* Zoom Controls Panel */
+.zoom-controls-panel {
+  margin: 16px !important;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 3px;
+  gap: 2px;
+}
+
+.zoom-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.zoom-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.zoom-btn:active {
+  background-color: var(--bg-active);
+  color: var(--text-primary);
+}
+
+.zoom-level-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 26px;
+  padding: 0 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.zoom-level-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.zoom-divider {
+  width: 1px;
+  height: 16px;
+  background-color: var(--border);
+  margin: 0 2px;
+}
+
+/* MiniMap */
+.canvas-minimap {
+  margin: 16px !important;
+  background-color: var(--bg-panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow) !important;
+  overflow: hidden;
+}
+
+.canvas-minimap .react-flow__minimap-mask {
+  fill: var(--bg-hover);
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.canvas-minimap .react-flow__minimap-node {
+  fill: var(--swatch-neutral);
+  stroke: var(--border);
 }

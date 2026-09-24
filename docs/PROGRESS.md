@@ -1,7 +1,7 @@
 # Progress
 
 ## Current Status
-- **Current Phase**: Phase 1: Shell layout, theme, top bar
+- **Current Phase**: Phase 2: Canvas (pan/zoom)
 - **Status**: Completed
 
 ## Phase Log
@@ -28,4 +28,17 @@
   - Implemented `LeftSidebar`, `RightSidebar`, and `Canvas` shell components.
   - Validated `npm run build` and `npm run check:colors` pass without violations.
   - Verified all Phase 1 acceptance criteria in the browser at http://localhost:5173.
+- **Known Issues**: None.
+
+### Phase 2: Canvas (pan/zoom)
+- **What was done**:
+  - Implemented `Canvas.tsx` using `@xyflow/react` inside `ReactFlowProvider`.
+  - Configured interaction settings: `panOnDrag` for left mouse dragging on empty space, `zoomOnScroll={true}`, `panOnScroll={false}`, `selectionOnDrag={false}`, `selectionKeyCode="Shift"`, `minZoom={0.1}`, `maxZoom={4}`.
+  - Added dotted `Background` using `var(--canvas-dot)` on `var(--bg-canvas)`.
+  - Built bottom-left `ZoomControls` component (`−`, zoom %, `+`, fit view) that reacts to viewport zoom changes.
+  - Added bottom-right `MiniMap` component styled using CSS variables.
+  - Configured `diagramStore.ts` using `zustand` and `zundo` `temporal` middleware with two temporary test nodes and edge.
+  - Overrode React Flow's CSS variables and node/selection styles in `src/theme/theme.css` using theme tokens.
+  - Validated `npm run build` and `npm run check:colors` passed with zero errors.
+  - Verified all Phase 2 acceptance criteria and interactions via browser automation at http://localhost:5173 in both Light and Dark themes.
 - **Known Issues**: None.
