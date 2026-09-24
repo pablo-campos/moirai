@@ -1,5 +1,89 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Settings, Sun, Moon } from 'lucide-react';
+import { APP_NAME, LOGO_SRC } from '../../config/brand';
+import { useTheme } from '../../theme/ThemeProvider';
 
 export const TopBar: React.FC = () => {
-  return <header className="top-bar" />;
+  const { theme, setTheme } = useTheme();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (
+        isSettingsOpen &&
+        popoverRef.current &&
+        !popoverRef.current.contains(e.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target as Node)
+      ) {
+        setIsSettingsOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isSettingsOpen) {
+        setIsSettingsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isSettingsOpen]);
+
+  return (
+    <header className="top-bar">
+      <div className="top-bar-brand">
+        <div className="top-bar-logo">
+          <img src={LOGO_SRC} alt={`${APP_NAME} logo`} />
+        </div>
+        <span className="top-bar-title">{APP_NAME}</span>
+      </div>
+
+      <div className="top-bar-actions">
+        <button
+          ref={buttonRef}
+          type="button"
+          className={`icon-button ${isSettingsOpen ? 'active' : ''}`}
+          aria-label="Open settings"
+          aria-expanded={isSettingsOpen}
+          onClick={() => setIsSettingsOpen((prev) => !prev)}
+        >
+          <Settings size={18} />
+        </button>
+
+        {isSettingsOpen && (
+          <div ref={popoverRef} className="settings-popover" role="dialog" aria-label="Settings">
+            <span className="popover-label">Appearance</span>
+            <div className="segmented-control" role="group" aria-label="Theme selector">
+              <button
+                type="button"
+                className={`segmented-button ${theme === 'light' ? 'active' : ''}`}
+                onClick={() => setTheme('light')}
+                aria-pressed={theme === 'light'}
+              >
+                <Sun size={14} />
+                <span>Light</span>
+              </button>
+              <button
+                type="button"
+                className={`segmented-button ${theme === 'dark' ? 'active' : ''}`}
+                onClick={() => setTheme('dark')}
+                aria-pressed={theme === 'dark'}
+              >
+                <Moon size={14} />
+                <span>Dark</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
 };

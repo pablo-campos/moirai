@@ -1,4 +1,2 @@
-export const BRAND = {
-  name: 'Moirai',
-  logo: 'M',
-};
+export const APP_NAME = 'Untitled Designer';
+export const LOGO_SRC = '/logo.svg';
