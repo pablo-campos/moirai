@@ -13,6 +13,7 @@ export const IconNode: React.FC<NodeProps> = ({ id, data, selected }) => {
   const [editValue, setEditValue] = useState(displayLabel);
   const inputRef = useRef<HTMLInputElement>(null);
   const updateNodeLabel = useDiagramStore((s) => s.updateNodeLabel);
+  const isArrowMode = useDiagramStore((s) => s.isArrowMode);
 
   useEffect(() => {
     if (!isEditing) {
@@ -54,7 +55,7 @@ export const IconNode: React.FC<NodeProps> = ({ id, data, selected }) => {
   };
 
   return (
-    <div className={`icon-node-wrapper ${selected ? 'selected' : ''}`}>
+    <div className={`icon-node-wrapper ${selected ? 'selected' : ''} ${isArrowMode ? 'in-arrow-mode' : ''}`}>
       <Handle
         type="target"
         position={Position.Top}
@@ -79,6 +80,15 @@ export const IconNode: React.FC<NodeProps> = ({ id, data, selected }) => {
         id="left"
         className="icon-node-handle"
       />
+
+      {isArrowMode && !isEditing && (
+        <Handle
+          type="source"
+          position={Position.Top}
+          id="arrow-mode-trigger"
+          className="arrow-mode-overlay-handle"
+        />
+      )}
 
       <div className="icon-node-icon-box">
         <DynamicIcon name={iconName} size={40} strokeWidth={1.5} className="icon-node-icon" />

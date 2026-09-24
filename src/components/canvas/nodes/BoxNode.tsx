@@ -16,6 +16,7 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const updateNodeData = useDiagramStore((s) => s.updateNodeData);
+  const isArrowMode = useDiagramStore((s) => s.isArrowMode);
 
   useEffect(() => {
     if (!isEditing) {
@@ -76,7 +77,7 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
 
   return (
     <div
-      className={`box-node-container ${selected ? 'selected' : ''}`}
+      className={`box-node-container ${selected ? 'selected' : ''} ${isArrowMode ? 'in-arrow-mode' : ''}`}
       style={{ width: `${width}px`, height: `${height}px` }}
     >
       <NodeResizer
@@ -117,6 +118,15 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
         className="box-node-handle"
         style={{ top: `${height / 2}px`, left: 0 }}
       />
+
+      {isArrowMode && !isEditing && (
+        <Handle
+          type="source"
+          position={Position.Top}
+          id="arrow-mode-trigger"
+          className="arrow-mode-overlay-handle"
+        />
+      )}
 
       <div className="box-node-shape" style={{ width: `${width}px`, height: `${height}px` }}>
         <svg

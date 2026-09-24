@@ -6,6 +6,7 @@ import {
   type OnNodesChange,
   type OnEdgesChange,
   type Connection,
+  MarkerType,
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
@@ -24,6 +25,7 @@ export type IconNodeData = NodeData;
 export interface DiagramState {
   nodes: Node[];
   edges: Edge[];
+  isArrowMode: boolean;
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   onConnect: (connection: Connection) => void;
@@ -32,6 +34,9 @@ export interface DiagramState {
   addNode: (node: Node) => void;
   updateNodeLabel: (id: string, label: string) => void;
   updateNodeData: (id: string, data: Partial<NodeData>) => void;
+  updateEdgeLabel: (id: string, label: string) => void;
+  setArrowMode: (active: boolean) => void;
+  toggleArrowMode: () => void;
 }
 
 export const useDiagramStore = create<DiagramState>()(
@@ -39,6 +44,7 @@ export const useDiagramStore = create<DiagramState>()(
     (set, get) => ({
       nodes: [],
       edges: [],
+      isArrowMode: false,
       onNodesChange: (changes) => {
         set({
           nodes: applyNodeChanges(changes, get().nodes),
@@ -50,8 +56,22 @@ export const useDiagramStore = create<DiagramState>()(
         });
       },
       onConnect: (connection) => {
+        const edgeParams: Edge = {
+          ...connection,
+          id: `edge-${connection.source}-${connection.sourceHandle || ''}-${connection.target}-${connection.targetHandle || ''}-${Date.now()}`,
+          type: 'orthogonal',
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: 'var(--edge)',
+            width: 14,
+            height: 14,
+          },
+          data: {
+            label: '',
+          },
+        };
         set({
-          edges: addEdge(connection, get().edges),
+          edges: addEdge(edgeParams, get().edges),
         });
       },
       setNodes: (nodes) => set({ nodes }),
@@ -93,6 +113,24 @@ export const useDiagramStore = create<DiagramState>()(
           }),
         });
       },
+      updateEdgeLabel: (id, label) => {
+        set({
+          edges: get().edges.map((edge) => {
+            if (edge.id === id) {
+              return {
+                ...edge,
+                data: {
+                  ...edge.data,
+                  label,
+                },
+              };
+            }
+            return edge;
+          }),
+        });
+      },
+      setArrowMode: (active) => set({ isArrowMode: active }),
+      toggleArrowMode: () => set({ isArrowMode: !get().isArrowMode }),
     }),
     {
       partialize: (state) => ({

@@ -7,10 +7,13 @@ import {
   type ComponentDefinition,
   type ComponentCategory,
 } from '../registry';
+import { useDiagramStore } from '../../store/diagramStore';
 
 export const LeftSidebar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
+  const isArrowMode = useDiagramStore((s) => s.isArrowMode);
+  const toggleArrowMode = useDiagramStore((s) => s.toggleArrowMode);
 
   const toggleCategory = (category: string) => {
     setCollapsedCategories((prev) => ({
@@ -42,11 +45,20 @@ export const LeftSidebar: React.FC = () => {
   }, [filteredRegistry]);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: ComponentDefinition) => {
+    if (item.nodeKind === 'tool') {
+      e.preventDefault();
+      return;
+    }
     e.dataTransfer.setData('application/reactflow/type', item.type);
     e.dataTransfer.effectAllowed = 'move';
   };
 
   const handleTileClick = (item: ComponentDefinition) => {
+    if (item.type === 'arrow' || item.nodeKind === 'tool') {
+      toggleArrowMode();
+      return;
+    }
+
     window.dispatchEvent(
       new CustomEvent('add-node-at-center', {
         detail: { type: item.type },
@@ -107,29 +119,36 @@ export const LeftSidebar: React.FC = () => {
 
               {!isCollapsed && (
                 <div className="palette-grid">
-                  {items.map((item) => (
-                    <div
-                      key={item.type}
-                      className="palette-tile"
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, item)}
-                      onClick={() => handleTileClick(item)}
-                      title={`${item.label} (Click or drag to add)`}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handleTileClick(item);
+                  {items.map((item) => {
+                    const isActiveTool = item.type === 'arrow' && isArrowMode;
+                    return (
+                      <div
+                        key={item.type}
+                        className={`palette-tile ${isActiveTool ? 'active tool-active' : ''}`}
+                        draggable={item.nodeKind !== 'tool'}
+                        onDragStart={(e) => handleDragStart(e, item)}
+                        onClick={() => handleTileClick(item)}
+                        title={
+                          item.type === 'arrow'
+                            ? `Arrow Tool (${isArrowMode ? 'Active - Click or Esc to exit' : 'Click to activate'})`
+                            : `${item.label} (Click or drag to add)`
                         }
-                      }}
-                    >
-                      <div className="palette-tile-icon">
-                        <DynamicIcon name={item.icon} size={22} strokeWidth={1.5} />
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleTileClick(item);
+                          }
+                        }}
+                      >
+                        <div className="palette-tile-icon">
+                          <DynamicIcon name={item.icon} size={22} strokeWidth={1.5} />
+                        </div>
+                        <span className="palette-tile-label">{item.label}</span>
                       </div>
-                      <span className="palette-tile-label">{item.label}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

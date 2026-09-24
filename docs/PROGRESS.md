@@ -1,7 +1,7 @@
 # Progress
 
 ## Current Status
-- **Current Phase**: Phase 4: Box node
+- **Current Phase**: Phase 5: Orthogonal arrows
 - **Status**: Completed
 
 ## Phase Log
@@ -64,4 +64,18 @@
   - Styled Box node in `src/theme/theme.css` strictly with CSS variables.
   - Validated `npm run build` and `npm run check:colors` passed with zero errors.
   - Verified in browser at http://localhost:5173 that single-line boxes render as hexagons, multi-line boxes morph into octagons, and horizontal resizing works.
+- **Known Issues**: None.
+
+### Phase 5: Orthogonal arrows
+- **What was done**:
+  - Re-introduced the Arrow tool tile in Basics palette with `nodeKind: 'tool'` and `MoveRight` icon.
+  - Added `isArrowMode`, `setArrowMode`, `toggleArrowMode`, and `updateEdgeLabel` to `src/store/diagramStore.ts`.
+  - Implemented `OrthogonalEdge.tsx` using `@xyflow/react`'s `getSmoothStepPath` with `borderRadius: 0` for strictly orthogonal routes, sharp 90-degree corners, `var(--edge)` stroke, and closed arrowhead marker (`ArrowClosed`).
+  - Added midpoint label rendering with double-click inline editing (Enter/blur to commit, Escape to cancel, stored in `edge.data.label`).
+  - Implemented `OrthogonalConnectionLine.tsx` for orthogonal dashed preview during connection drag.
+  - Configured `Canvas.tsx` with `connectionMode={ConnectionMode.Loose}`, registered custom `orthogonal` edge type, body-drop nearest handle snapping in `handleConnectEnd`, and Escape key to exit arrow mode.
+  - Enhanced `IconNode.tsx` and `BoxNode.tsx` to display connection handles when in arrow mode and support starting connections anywhere on the node body via an overlay handle.
+  - Styled edge paths, labels, connection lines, and active arrow tool tile in `src/theme/theme.css` using theme CSS variables.
+  - Verified `npm run build` and `npm run check:colors` pass with 0 errors.
+  - Verified in browser at http://localhost:5173 that orthogonal edges connect cleanly between node handles and node bodies, arrow tool mode toggles with visual feedback and Escape key handling, and midpoint labels edit inline.
 - **Known Issues**: None.

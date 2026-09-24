@@ -6,9 +6,12 @@ import {
   BackgroundVariant,
   MiniMap,
   Panel,
+  ConnectionMode,
+  MarkerType,
   useReactFlow,
   useViewport,
   type Node,
+  type OnConnectStartParams,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Minus, Plus, Maximize2 } from 'lucide-react';
@@ -16,6 +19,8 @@ import { useDiagramStore } from '../../store/diagramStore';
 import { getComponentByType } from '../registry';
 import { IconNode } from './nodes/IconNode';
 import { BoxNode } from './nodes/BoxNode';
+import { OrthogonalEdge } from './edges/OrthogonalEdge';
+import { OrthogonalConnectionLine } from './edges/OrthogonalConnectionLine';
 
 const ZoomControls: React.FC = () => {
   const { zoomIn, zoomOut, fitView, zoomTo } = useReactFlow();
@@ -73,7 +78,19 @@ const ZoomControls: React.FC = () => {
 const CanvasInner: React.FC = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition } = useReactFlow();
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode } = useDiagramStore();
+  const {
+    nodes,
+    edges,
+    isArrowMode,
+    setArrowMode,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    addNode,
+  } = useDiagramStore();
+
+  const connectingNodeId = useRef<string | null>(null);
+  const connectingHandleId = useRef<string | null>(null);
 
   const nodeTypes = useMemo(
     () => ({
@@ -81,6 +98,108 @@ const CanvasInner: React.FC = () => {
       box: BoxNode,
     }),
     []
+  );
+
+  const edgeTypes = useMemo(
+    () => ({
+      orthogonal: OrthogonalEdge,
+    }),
+    []
+  );
+
+  const defaultEdgeOptions = useMemo(
+    () => ({
+      type: 'orthogonal',
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: 'var(--edge)',
+        width: 14,
+        height: 14,
+      },
+    }),
+    []
+  );
+
+  // Exit arrow mode on Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setArrowMode(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setArrowMode]);
+
+  const handleConnectStart = useCallback(
+    (_: MouseEvent | TouchEvent, params: OnConnectStartParams) => {
+      connectingNodeId.current = params.nodeId;
+      connectingHandleId.current = params.handleId;
+    },
+    []
+  );
+
+  const handleConnectEnd = useCallback(
+    (event: MouseEvent | TouchEvent) => {
+      if (!connectingNodeId.current) return;
+
+      const targetIsHandle = (event.target as Element)?.classList?.contains('react-flow__handle');
+      if (targetIsHandle) {
+        connectingNodeId.current = null;
+        connectingHandleId.current = null;
+        return;
+      }
+
+      const clientX = 'clientX' in event ? event.clientX : event.touches?.[0]?.clientX;
+      const clientY = 'clientY' in event ? event.clientY : event.touches?.[0]?.clientY;
+
+      if (clientX !== undefined && clientY !== undefined) {
+        const element = document.elementFromPoint(clientX, clientY);
+        const nodeElement = element?.closest('.react-flow__node');
+
+        if (nodeElement) {
+          const targetNodeId = nodeElement.getAttribute('data-id');
+
+          if (targetNodeId && targetNodeId !== connectingNodeId.current) {
+            // Find the closest standard connection handle on target node
+            const handles = Array.from(
+              nodeElement.querySelectorAll('.react-flow__handle:not(.arrow-mode-overlay-handle)')
+            );
+
+            let nearestHandle: Element | null = null;
+            let minDistance = Infinity;
+
+            for (const handle of handles) {
+              const rect = handle.getBoundingClientRect();
+              const handleCenterX = rect.left + rect.width / 2;
+              const handleCenterY = rect.top + rect.height / 2;
+              const dist = Math.hypot(clientX - handleCenterX, clientY - handleCenterY);
+              if (dist < minDistance) {
+                minDistance = dist;
+                nearestHandle = handle;
+              }
+            }
+
+            if (nearestHandle) {
+              const targetHandleId = nearestHandle.getAttribute('data-handleid') || null;
+              onConnect({
+                source: connectingNodeId.current,
+                sourceHandle:
+                  connectingHandleId.current === 'arrow-mode-trigger'
+                    ? null
+                    : connectingHandleId.current,
+                target: targetNodeId,
+                targetHandle: targetHandleId,
+              });
+            }
+          }
+        }
+      }
+
+      connectingNodeId.current = null;
+      connectingHandleId.current = null;
+    },
+    [onConnect]
   );
 
   const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -200,22 +319,33 @@ const CanvasInner: React.FC = () => {
   }, [screenToFlowPosition, addNode]);
 
   return (
-    <div ref={reactFlowWrapper} className="canvas-wrapper" onDragOver={handleDragOver} onDrop={handleDrop}>
+    <div
+      ref={reactFlowWrapper}
+      className={`canvas-wrapper ${isArrowMode ? 'arrow-mode-active' : ''}`}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        defaultEdgeOptions={defaultEdgeOptions}
+        connectionMode={ConnectionMode.Loose}
+        connectionLineComponent={OrthogonalConnectionLine}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        panOnDrag={true}
+        onConnectStart={handleConnectStart}
+        onConnectEnd={handleConnectEnd}
+        panOnDrag={!isArrowMode}
         zoomOnScroll={true}
         panOnScroll={false}
         selectionOnDrag={false}
         selectionKeyCode="Shift"
         minZoom={0.1}
         maxZoom={4}
-        nodesDraggable={true}
+        nodesDraggable={!isArrowMode}
         fitView={false}
         proOptions={{ hideAttribution: true }}
         className="diagram-react-flow"

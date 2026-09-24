@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  MoveRight,
   Monitor,
   Smartphone,
   ShieldCheck,
@@ -24,7 +25,7 @@ import {
   type LucideProps,
 } from 'lucide-react';
 
-export type NodeKind = 'box' | 'icon';
+export type NodeKind = 'tool' | 'box' | 'icon';
 
 export type ComponentCategory =
   | 'Basics'
@@ -44,6 +45,7 @@ export interface ComponentDefinition {
 
 export const COMPONENT_REGISTRY: ComponentDefinition[] = [
   // Basics
+  { type: 'arrow', label: 'Arrow', icon: 'MoveRight', category: 'Basics', nodeKind: 'tool' },
   { type: 'box', label: 'Box', icon: 'Hexagon', category: 'Basics', nodeKind: 'box' },
 
   // Clients
@@ -87,6 +89,7 @@ export const CATEGORIES: ComponentCategory[] = [
 ];
 
 const ICON_MAP: Record<string, React.FC<LucideProps>> = {
+  MoveRight,
   Hexagon,
   Monitor,
   Smartphone,
