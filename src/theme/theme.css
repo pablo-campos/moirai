@@ -563,6 +563,128 @@ button {
   opacity: 1;
 }
 
+/* Box Node Custom Styling */
+.box-node-container {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.box-node-shape {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box-node-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+
+.box-node-polygon {
+  fill: var(--node-fill);
+  stroke: var(--node-stroke);
+  stroke-width: 1.5;
+  transition: fill 150ms ease, stroke 150ms ease;
+}
+
+.box-node-container.selected .box-node-polygon {
+  stroke: var(--selection);
+}
+
+.box-node-text-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 24px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.box-node-text {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-align: center;
+  user-select: none;
+  cursor: text;
+}
+
+.box-node-textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  text-align: center;
+  line-height: 1.35;
+  padding: 0;
+  margin: 0;
+}
+
+/* Box Node Handles */
+.box-node-handle {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: var(--accent) !important;
+  border: 1px solid var(--bg-panel) !important;
+  border-radius: 50% !important;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  z-index: 10;
+}
+
+.box-node-container:hover .box-node-handle,
+.box-node-container.selected .box-node-handle {
+  opacity: 1;
+}
+
+/* Resizer Controls */
+.box-resizer-handle,
+.react-flow__resize-control.handle {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: var(--bg-panel) !important;
+  border: 1.5px solid var(--selection) !important;
+  border-radius: 2px !important;
+}
+
+.box-resizer-line,
+.react-flow__resize-control.line {
+  border-color: var(--selection) !important;
+}
+
+/* Only allow horizontal resize controls on box */
+.box-node-container .react-flow__resize-control.top,
+.box-node-container .react-flow__resize-control.bottom,
+.box-node-container .react-flow__resize-control.top-left,
+.box-node-container .react-flow__resize-control.top-right,
+.box-node-container .react-flow__resize-control.bottom-left,
+.box-node-container .react-flow__resize-control.bottom-right {
+  display: none !important;
+}
+
 /* React Flow Theme Overrides */
 .diagram-react-flow {
   width: 100%;

@@ -5,7 +5,7 @@ import { useDiagramStore, type IconNodeData } from '../../../store/diagramStore'
 
 export const IconNode: React.FC<NodeProps> = ({ id, data, selected }) => {
   const nodeData = data as unknown as IconNodeData;
-  const def = getComponentByType(nodeData.componentType);
+  const def = getComponentByType(nodeData.componentType || '');
   const iconName = def ? def.icon : 'Hexagon';
   const displayLabel = (nodeData.label ?? def?.label ?? 'Node').toString();
 

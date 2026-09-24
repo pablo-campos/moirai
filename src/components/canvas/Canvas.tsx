@@ -15,6 +15,7 @@ import { Minus, Plus, Maximize2 } from 'lucide-react';
 import { useDiagramStore } from '../../store/diagramStore';
 import { getComponentByType } from '../registry';
 import { IconNode } from './nodes/IconNode';
+import { BoxNode } from './nodes/BoxNode';
 
 const ZoomControls: React.FC = () => {
   const { zoomIn, zoomOut, fitView, zoomTo } = useReactFlow();
@@ -74,7 +75,13 @@ const CanvasInner: React.FC = () => {
   const { screenToFlowPosition } = useReactFlow();
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode } = useDiagramStore();
 
-  const nodeTypes = useMemo(() => ({ icon: IconNode }), []);
+  const nodeTypes = useMemo(
+    () => ({
+      icon: IconNode,
+      box: BoxNode,
+    }),
+    []
+  );
 
   const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -96,18 +103,35 @@ const CanvasInner: React.FC = () => {
         y: event.clientY,
       });
 
-      const newNode: Node = {
-        id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-        type: def.nodeKind === 'icon' ? 'icon' : def.nodeKind,
-        position: {
-          x: position.x - 24,
-          y: position.y - 24,
-        },
-        data: {
-          componentType: def.type,
-          label: def.label,
-        },
-      };
+      let newNode: Node;
+      if (def.nodeKind === 'box') {
+        newNode = {
+          id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          type: 'box',
+          position: {
+            x: position.x - 80,
+            y: position.y - 18,
+          },
+          data: {
+            componentType: def.type,
+            text: 'Service Box',
+            width: 160,
+          },
+        };
+      } else {
+        newNode = {
+          id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          type: 'icon',
+          position: {
+            x: position.x - 24,
+            y: position.y - 24,
+          },
+          data: {
+            componentType: def.type,
+            label: def.label,
+          },
+        };
+      }
 
       addNode(newNode);
     },
@@ -136,18 +160,35 @@ const CanvasInner: React.FC = () => {
 
       const position = screenToFlowPosition(centerScreen);
 
-      const newNode: Node = {
-        id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-        type: def.nodeKind === 'icon' ? 'icon' : def.nodeKind,
-        position: {
-          x: position.x - 24,
-          y: position.y - 24,
-        },
-        data: {
-          componentType: def.type,
-          label: def.label,
-        },
-      };
+      let newNode: Node;
+      if (def.nodeKind === 'box') {
+        newNode = {
+          id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          type: 'box',
+          position: {
+            x: position.x - 80,
+            y: position.y - 18,
+          },
+          data: {
+            componentType: def.type,
+            text: 'Service Box',
+            width: 160,
+          },
+        };
+      } else {
+        newNode = {
+          id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          type: 'icon',
+          position: {
+            x: position.x - 24,
+            y: position.y - 24,
+          },
+          data: {
+            componentType: def.type,
+            label: def.label,
+          },
+        };
+      }
 
       addNode(newNode);
     };

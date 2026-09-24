@@ -11,11 +11,15 @@ import {
   addEdge,
 } from '@xyflow/react';
 
-export interface IconNodeData {
-  componentType: string;
-  label: string;
+export interface NodeData {
+  componentType?: string;
+  label?: string;
+  text?: string;
+  width?: number;
   [key: string]: unknown;
 }
+
+export type IconNodeData = NodeData;
 
 export interface DiagramState {
   nodes: Node[];
@@ -27,6 +31,7 @@ export interface DiagramState {
   setEdges: (edges: Edge[]) => void;
   addNode: (node: Node) => void;
   updateNodeLabel: (id: string, label: string) => void;
+  updateNodeData: (id: string, data: Partial<NodeData>) => void;
 }
 
 export const useDiagramStore = create<DiagramState>()(
@@ -65,6 +70,22 @@ export const useDiagramStore = create<DiagramState>()(
                 data: {
                   ...node.data,
                   label,
+                },
+              };
+            }
+            return node;
+          }),
+        });
+      },
+      updateNodeData: (id, data) => {
+        set({
+          nodes: get().nodes.map((node) => {
+            if (node.id === id) {
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  ...data,
                 },
               };
             }

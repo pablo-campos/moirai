@@ -1,7 +1,7 @@
 # Progress
 
 ## Current Status
-- **Current Phase**: Phase 3: Component registry, palette, icon nodes
+- **Current Phase**: Phase 4: Box node
 - **Status**: Completed
 
 ## Phase Log
@@ -53,4 +53,15 @@
   - Styled palette and icon nodes in `src/theme/theme.css` strictly using CSS variables.
   - Validated `npm run build` and `npm run check:colors` passed with zero errors.
   - Verified in browser at http://localhost:5173 that all 20 icon components can be added via drag/click, labels are editable inline, search filters correctly, handles/selection work, and theming renders cleanly in both Light and Dark modes.
+- **Known Issues**: None.
+
+### Phase 4: Box node
+- **What was done**:
+  - Created `src/lib/boxGeometry.ts` implementing `boxPoints(w, h, c)` to calculate polygon coordinates for hexagons (single-line) and octagons (multi-line).
+  - Implemented `src/components/canvas/nodes/BoxNode.tsx` with SVG polygon background (`fill="var(--node-fill)"`, `stroke="var(--node-stroke)"`), dynamic height measurement with `ResizeObserver`, inline textarea editing on double-click, horizontal resizing via `NodeResizer`, and 4 connection handles on hover/selection.
+  - Registered `box` in `COMPONENT_REGISTRY`, `LeftSidebar.tsx`, and `Canvas.tsx`.
+  - Removed Separator and Arrow from specs, registry, and palette per updated design requirements.
+  - Styled Box node in `src/theme/theme.css` strictly with CSS variables.
+  - Validated `npm run build` and `npm run check:colors` passed with zero errors.
+  - Verified in browser at http://localhost:5173 that single-line boxes render as hexagons, multi-line boxes morph into octagons, and horizontal resizing works.
 - **Known Issues**: None.

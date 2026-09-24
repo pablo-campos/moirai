@@ -2,11 +2,10 @@
 
 All components are defined in src/components/registry.ts as:
 { type, label, icon, category, nodeKind }
-nodeKind is one of: "tool" | "box" | "icon"
+nodeKind is one of: "box" | "icon"
 
 | Component      | Icon (lucide-react) | Category       | nodeKind  |
 |----------------|---------------------|----------------|-----------|
-| Arrow          | MoveRight           | Basics         | tool      |
 | Box            | custom hexagon SVG  | Basics         | box       |
 | Browser        | Monitor             | Clients        | icon      |
 | Mobile device  | Smartphone          | Clients        | icon      |
