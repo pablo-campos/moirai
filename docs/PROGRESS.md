@@ -1,7 +1,7 @@
 # Progress
 
 ## Current Status
-- **Current Phase**: Phase 5: Orthogonal arrows
+- **Current Phase**: Phase 6: Right configuration panel
 - **Status**: Completed
 
 ## Phase Log
@@ -78,4 +78,19 @@
   - Styled edge paths, labels, connection lines, and active arrow tool tile in `src/theme/theme.css` using theme CSS variables.
   - Verified `npm run build` and `npm run check:colors` pass with 0 errors.
   - Verified in browser at http://localhost:5173 that orthogonal edges connect cleanly between node handles and node bodies, arrow tool mode toggles with visual feedback and Escape key handling, and midpoint labels edit inline.
+- **Known Issues**: None.
+
+### Phase 6: Right configuration panel
+- **What was done**:
+  - Implemented `RightSidebar.tsx` with context-aware sections based on active canvas selection.
+  - **Canvas Settings** (nothing selected): Show grid toggle, Snap to grid toggle, Grid size segmented button (10px / 20px), and Show minimap toggle.
+  - **Icon Node Properties**: Editable label input, label position (below/right), icon size (S/M/L: 28px/40px/56px), color swatch picker (6 `--swatch-*` tokens), X/Y coordinate inputs, position lock toggle, Duplicate, and Delete buttons.
+  - **Box Node Properties**: Textarea editing, font size (S/M/L: 12px/14px/16px), text alignment (left/center/right), fill color swatch picker (+ transparent), stroke color picker, stroke style (solid/dashed), width slider, Duplicate, and Delete buttons.
+  - **Arrow Properties**: Edge label input, line style (solid/dashed/dotted), stroke width (1px/1.5px/2px/3px), arrowhead markers (none/end/start/both), color swatch picker, Duplicate, and Delete buttons.
+  - **Multi-Selection**: Alignment tools (left, center, right, top, middle, bottom), distribution tools (horizontal, vertical), shared color swatch batch updates, Duplicate All, and Delete All buttons.
+  - Extended `src/store/diagramStore.ts` with `canvasSettings`, `updateCanvasSettings`, `updateNodePosition`, `duplicateSelected`, `deleteSelected`, `alignSelected`, `distributeSelected`, `batchUpdateSelectedNodes`, and `batchUpdateSelectedEdges` with full undo history tracking via `zundo`.
+  - Added SVG defs dynamic arrowhead markers matching edge colors in `OrthogonalEdge.tsx`.
+  - Styled all property rows, inputs, toggle switches, segmented controls, swatch pickers, and action buttons in `src/theme/theme.css` strictly using CSS variables.
+  - Validated `npm run build` and `npm run check:colors` pass with zero errors.
+  - Verified in browser at http://localhost:5173 that property updates visibly reflect on selected items live, duplicate/delete work, and colors remap cleanly across theme switches.
 - **Known Issues**: None.

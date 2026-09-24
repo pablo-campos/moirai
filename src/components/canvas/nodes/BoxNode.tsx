@@ -7,6 +7,24 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
   const nodeData = data as unknown as NodeData;
   const initialText = (nodeData.text ?? nodeData.label ?? 'Service Box').toString();
   const width = typeof nodeData.width === 'number' ? Math.max(100, nodeData.width) : 160;
+  const fontSize = nodeData.fontSize || 'M';
+  const textAlign = nodeData.textAlign || 'center';
+  const fillColor = nodeData.fill;
+  const strokeColor = nodeData.strokeColor;
+  const strokeStyle = nodeData.strokeStyle || 'solid';
+  const isLocked = Boolean(nodeData.locked);
+
+  const fillStyle =
+    fillColor === 'transparent'
+      ? 'transparent'
+      : fillColor
+      ? `var(--${fillColor})`
+      : 'var(--node-fill)';
+
+  const strokeVal = strokeColor ? `var(--${strokeColor})` : 'var(--node-stroke)';
+  const strokeDash = strokeStyle === 'dashed' ? '5 5' : undefined;
+
+  const fontPx = fontSize === 'S' ? 12 : fontSize === 'L' ? 16 : 14;
 
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(initialText);
@@ -34,7 +52,7 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
     });
     observer.observe(textMeasureRef.current);
     return () => observer.disconnect();
-  }, [editText, width]);
+  }, [editText, width, fontPx]);
 
   // Height formula: min 36px (single-line), or measured height + vertical padding
   const height = Math.max(36, Math.ceil(textHeight + 14));
@@ -77,11 +95,11 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
 
   return (
     <div
-      className={`box-node-container ${selected ? 'selected' : ''} ${isArrowMode ? 'in-arrow-mode' : ''}`}
+      className={`box-node-container ${selected ? 'selected' : ''} ${isArrowMode ? 'in-arrow-mode' : ''} ${isLocked ? 'locked' : ''}`}
       style={{ width: `${width}px`, height: `${height}px` }}
     >
       <NodeResizer
-        isVisible={Boolean(selected)}
+        isVisible={Boolean(selected) && !isLocked}
         minWidth={100}
         minHeight={height}
         maxHeight={height}
@@ -135,19 +153,35 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
           className="box-node-svg"
           viewBox={`0 0 ${width} ${height}`}
         >
-          <polygon points={points} className="box-node-polygon" />
+          <polygon
+            points={points}
+            className="box-node-polygon"
+            style={{
+              fill: fillStyle,
+              stroke: strokeVal,
+              strokeDasharray: strokeDash,
+            }}
+          />
         </svg>
 
         <div
           ref={textMeasureRef}
           className="box-node-text-content"
-          style={{ width: `${width}px` }}
+          style={{
+            width: `${width}px`,
+            fontSize: `${fontPx}px`,
+            textAlign,
+          }}
           onDoubleClick={handleDoubleClick}
         >
           {isEditing ? (
             <textarea
               ref={textareaRef}
               className="box-node-textarea nodrag nopan"
+              style={{
+                fontSize: `${fontPx}px`,
+                textAlign,
+              }}
               value={editText}
               onChange={(e) => setEditText(e.target.value)}
               onBlur={handleCommit}

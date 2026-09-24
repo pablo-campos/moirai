@@ -8,6 +8,13 @@ export const IconNode: React.FC<NodeProps> = ({ id, data, selected }) => {
   const def = getComponentByType(nodeData.componentType || '');
   const iconName = def ? def.icon : 'Hexagon';
   const displayLabel = (nodeData.label ?? def?.label ?? 'Node').toString();
+  const labelPosition = nodeData.labelPosition || 'below';
+  const iconSize = nodeData.iconSize || 'M';
+  const iconColor = nodeData.iconColor;
+  const isLocked = Boolean(nodeData.locked);
+
+  const pixelSize = iconSize === 'S' ? 28 : iconSize === 'L' ? 56 : 40;
+  const strokeColor = iconColor ? `var(--${iconColor})` : 'var(--node-icon)';
 
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(displayLabel);
@@ -55,7 +62,9 @@ export const IconNode: React.FC<NodeProps> = ({ id, data, selected }) => {
   };
 
   return (
-    <div className={`icon-node-wrapper ${selected ? 'selected' : ''} ${isArrowMode ? 'in-arrow-mode' : ''}`}>
+    <div
+      className={`icon-node-wrapper pos-${labelPosition} size-${iconSize} ${selected ? 'selected' : ''} ${isArrowMode ? 'in-arrow-mode' : ''} ${isLocked ? 'locked' : ''}`}
+    >
       <Handle
         type="target"
         position={Position.Top}
@@ -90,8 +99,15 @@ export const IconNode: React.FC<NodeProps> = ({ id, data, selected }) => {
         />
       )}
 
-      <div className="icon-node-icon-box">
-        <DynamicIcon name={iconName} size={40} strokeWidth={1.5} className="icon-node-icon" />
+      <div
+        className="icon-node-icon-box"
+        style={{
+          width: `${pixelSize + 8}px`,
+          height: `${pixelSize + 8}px`,
+          color: strokeColor,
+        }}
+      >
+        <DynamicIcon name={iconName} size={pixelSize} strokeWidth={1.5} className="icon-node-icon" />
       </div>
 
       <div className="icon-node-label-container" onDoubleClick={handleDoubleClick}>

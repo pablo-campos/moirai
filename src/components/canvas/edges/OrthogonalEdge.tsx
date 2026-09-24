@@ -5,7 +5,7 @@ import {
   getSmoothStepPath,
   type EdgeProps,
 } from '@xyflow/react';
-import { useDiagramStore } from '../../../store/diagramStore';
+import { useDiagramStore, type EdgeData } from '../../../store/diagramStore';
 
 export const OrthogonalEdge: React.FC<EdgeProps> = ({
   id,
@@ -16,7 +16,6 @@ export const OrthogonalEdge: React.FC<EdgeProps> = ({
   sourcePosition,
   targetPosition,
   style = {},
-  markerEnd,
   data,
   selected,
 }) => {
@@ -30,8 +29,29 @@ export const OrthogonalEdge: React.FC<EdgeProps> = ({
     borderRadius: 0,
   });
 
-  const edgeData = (data || {}) as Record<string, unknown>;
+  const edgeData = (data || {}) as EdgeData;
   const labelText = (edgeData.label ?? '').toString();
+  const lineStyle = edgeData.lineStyle || 'solid';
+  const customStrokeWidth = typeof edgeData.strokeWidth === 'number' ? edgeData.strokeWidth : 1.5;
+  const colorToken = edgeData.color;
+  const arrowheads = edgeData.arrowheads ?? 'end';
+
+  const strokeColor = selected
+    ? 'var(--selection)'
+    : colorToken
+    ? `var(--${colorToken})`
+    : 'var(--edge)';
+
+  const strokeDash =
+    lineStyle === 'dashed' ? '6 6' : lineStyle === 'dotted' ? '2 4' : undefined;
+
+  const strokeWidth = selected ? Math.max(2, customStrokeWidth) : customStrokeWidth;
+
+  const showMarkerStart = arrowheads === 'start' || arrowheads === 'both';
+  const showMarkerEnd = arrowheads === 'end' || arrowheads === 'both';
+
+  const markerStartId = `marker-start-${id}`;
+  const markerEndId = `marker-end-${id}`;
 
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(labelText);
@@ -80,13 +100,43 @@ export const OrthogonalEdge: React.FC<EdgeProps> = ({
 
   return (
     <>
+      <defs>
+        {showMarkerStart && (
+          <marker
+            id={markerStartId}
+            viewBox="0 0 10 10"
+            refX="3"
+            refY="5"
+            markerWidth={6 + strokeWidth}
+            markerHeight={6 + strokeWidth}
+            orient="auto-start-reverse"
+          >
+            <path d="M 10 0 L 0 5 L 10 10 z" fill={strokeColor} />
+          </marker>
+        )}
+        {showMarkerEnd && (
+          <marker
+            id={markerEndId}
+            viewBox="0 0 10 10"
+            refX="7"
+            refY="5"
+            markerWidth={6 + strokeWidth}
+            markerHeight={6 + strokeWidth}
+            orient="auto"
+          >
+            <path d="M 0 0 L 10 5 L 0 10 z" fill={strokeColor} />
+          </marker>
+        )}
+      </defs>
       <BaseEdge
         id={id}
         path={edgePath}
-        markerEnd={markerEnd}
+        markerStart={showMarkerStart ? `url(#${markerStartId})` : undefined}
+        markerEnd={showMarkerEnd ? `url(#${markerEndId})` : undefined}
         style={{
-          stroke: selected ? 'var(--selection)' : 'var(--edge)',
-          strokeWidth: selected ? 2 : 1.5,
+          stroke: strokeColor,
+          strokeWidth,
+          strokeDasharray: strokeDash,
           ...style,
         }}
       />

@@ -7,6 +7,7 @@ import {
   MiniMap,
   Panel,
   ConnectionMode,
+  SelectionMode,
   MarkerType,
   useReactFlow,
   useViewport,
@@ -82,6 +83,7 @@ const CanvasInner: React.FC = () => {
     nodes,
     edges,
     isArrowMode,
+    canvasSettings,
     setArrowMode,
     onNodesChange,
     onEdgesChange,
@@ -338,11 +340,15 @@ const CanvasInner: React.FC = () => {
         onConnect={onConnect}
         onConnectStart={handleConnectStart}
         onConnectEnd={handleConnectEnd}
+        snapToGrid={canvasSettings.snapToGrid}
+        snapGrid={[canvasSettings.gridSize, canvasSettings.gridSize]}
         panOnDrag={!isArrowMode}
         zoomOnScroll={true}
         panOnScroll={false}
         selectionOnDrag={false}
         selectionKeyCode="Shift"
+        multiSelectionKeyCode={['Shift', 'Meta', 'Control']}
+        selectionMode={SelectionMode.Partial}
         minZoom={0.1}
         maxZoom={4}
         nodesDraggable={!isArrowMode}
@@ -350,20 +356,24 @@ const CanvasInner: React.FC = () => {
         proOptions={{ hideAttribution: true }}
         className="diagram-react-flow"
       >
-        <Background
-          variant={BackgroundVariant.Dots}
-          color="var(--canvas-dot)"
-          bgColor="var(--bg-canvas)"
-          gap={20}
-          size={1.5}
-        />
+        {canvasSettings.showGrid && (
+          <Background
+            variant={BackgroundVariant.Dots}
+            color="var(--canvas-dot)"
+            bgColor="var(--bg-canvas)"
+            gap={canvasSettings.gridSize}
+            size={1.5}
+          />
+        )}
         <ZoomControls />
-        <MiniMap
-          position="bottom-right"
-          className="canvas-minimap"
-          zoomable
-          pannable
-        />
+        {canvasSettings.showMinimap && (
+          <MiniMap
+            position="bottom-right"
+            className="canvas-minimap"
+            zoomable
+            pannable
+          />
+        )}
       </ReactFlow>
     </div>
   );
