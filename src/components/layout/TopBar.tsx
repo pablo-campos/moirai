@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Settings, Sun, Moon } from 'lucide-react';
+import { Settings, Sun, Moon, FilePlus, AlertTriangle } from 'lucide-react';
 import { APP_NAME, LOGO_SRC } from '../../config/brand';
 import { useTheme } from '../../theme/ThemeProvider';
+import { useDiagramStore } from '../../store/diagramStore';
 
 export const TopBar: React.FC = () => {
   const { theme, setTheme } = useTheme();
+  const clearDiagram = useDiagramStore((s) => s.clearDiagram);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [showConfirmNew, setShowConfirmNew] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -19,12 +22,14 @@ export const TopBar: React.FC = () => {
         !buttonRef.current.contains(e.target as Node)
       ) {
         setIsSettingsOpen(false);
+        setShowConfirmNew(false);
       }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isSettingsOpen) {
         setIsSettingsOpen(false);
+        setShowConfirmNew(false);
       }
     };
 
@@ -36,6 +41,12 @@ export const TopBar: React.FC = () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isSettingsOpen]);
+
+  const handleConfirmNew = () => {
+    clearDiagram();
+    setShowConfirmNew(false);
+    setIsSettingsOpen(false);
+  };
 
   return (
     <header className="top-bar">
@@ -53,7 +64,10 @@ export const TopBar: React.FC = () => {
           className={`icon-button ${isSettingsOpen ? 'active' : ''}`}
           aria-label="Open settings"
           aria-expanded={isSettingsOpen}
-          onClick={() => setIsSettingsOpen((prev) => !prev)}
+          onClick={() => {
+            setIsSettingsOpen((prev) => !prev);
+            setShowConfirmNew(false);
+          }}
         >
           <Settings size={18} />
         </button>
@@ -81,6 +95,43 @@ export const TopBar: React.FC = () => {
                 <span>Dark</span>
               </button>
             </div>
+
+            <div className="popover-divider" />
+
+            <span className="popover-label">Diagram</span>
+            {!showConfirmNew ? (
+              <button
+                type="button"
+                className="popover-menu-btn"
+                onClick={() => setShowConfirmNew(true)}
+              >
+                <FilePlus size={14} />
+                <span>New diagram</span>
+              </button>
+            ) : (
+              <div className="popover-confirm-box">
+                <div className="popover-confirm-msg">
+                  <AlertTriangle size={14} className="confirm-icon" />
+                  <span>Clear canvas & start new diagram?</span>
+                </div>
+                <div className="popover-confirm-actions">
+                  <button
+                    type="button"
+                    className="popover-confirm-btn confirm-cancel"
+                    onClick={() => setShowConfirmNew(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="popover-confirm-btn confirm-action"
+                    onClick={handleConfirmNew}
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useRef, useEffect, useMemo, useCallback, useState } from 'react';
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -12,16 +12,21 @@ import {
   useReactFlow,
   useViewport,
   type Node,
+  type Edge,
   type OnConnectStartParams,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Minus, Plus, Maximize2 } from 'lucide-react';
 import { useDiagramStore } from '../../store/diagramStore';
+import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { getComponentByType } from '../registry';
 import { IconNode } from './nodes/IconNode';
 import { BoxNode } from './nodes/BoxNode';
 import { OrthogonalEdge } from './edges/OrthogonalEdge';
 import { OrthogonalConnectionLine } from './edges/OrthogonalConnectionLine';
+import { HelperLinesRenderer } from './HelperLines';
+import { ContextMenu, type ContextMenuState } from './ContextMenu';
+import { getHelperLines, type HelperLines } from '../../lib/helperLines';
 
 const ZoomControls: React.FC = () => {
   const { zoomIn, zoomOut, fitView, zoomTo } = useReactFlow();
@@ -84,12 +89,18 @@ const CanvasInner: React.FC = () => {
     edges,
     isArrowMode,
     canvasSettings,
-    setArrowMode,
     onNodesChange,
     onEdgesChange,
     onConnect,
     addNode,
+    setNodes,
+    setEdges,
   } = useDiagramStore();
+
+  useKeyboardShortcuts();
+
+  const [helperLines, setHelperLines] = useState<HelperLines>({});
+  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
 
   const connectingNodeId = useRef<string | null>(null);
   const connectingHandleId = useRef<string | null>(null);
@@ -121,17 +132,6 @@ const CanvasInner: React.FC = () => {
     }),
     []
   );
-
-  // Exit arrow mode on Escape
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setArrowMode(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [setArrowMode]);
 
   const handleConnectStart = useCallback(
     (_: MouseEvent | TouchEvent, params: OnConnectStartParams) => {
@@ -320,6 +320,67 @@ const CanvasInner: React.FC = () => {
     };
   }, [screenToFlowPosition, addNode]);
 
+  // Helper lines during node drag
+  const handleNodeDrag = useCallback(
+    (_event: MouseEvent | TouchEvent, node: Node) => {
+      const { lines } = getHelperLines(node, nodes);
+      setHelperLines(lines);
+    },
+    [nodes]
+  );
+
+  const handleNodeDragStop = useCallback(() => {
+    setHelperLines({});
+  }, []);
+
+  // Context Menu handlers
+  const handleNodeContextMenu = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      event.preventDefault();
+      // Select the right-clicked node if not already selected
+      if (!node.selected) {
+        setNodes(
+          nodes.map((n) => ({
+            ...n,
+            selected: n.id === node.id,
+          }))
+        );
+        setEdges(edges.map((e) => ({ ...e, selected: false })));
+      }
+      setContextMenu({
+        x: event.clientX,
+        y: event.clientY,
+        nodeId: node.id,
+      });
+    },
+    [nodes, edges, setNodes, setEdges]
+  );
+
+  const handleEdgeContextMenu = useCallback(
+    (event: React.MouseEvent, edge: Edge) => {
+      event.preventDefault();
+      if (!edge.selected) {
+        setEdges(
+          edges.map((e) => ({
+            ...e,
+            selected: e.id === edge.id,
+          }))
+        );
+        setNodes(nodes.map((n) => ({ ...n, selected: false })));
+      }
+      setContextMenu({
+        x: event.clientX,
+        y: event.clientY,
+        edgeId: edge.id,
+      });
+    },
+    [nodes, edges, setNodes, setEdges]
+  );
+
+  const handlePaneClick = useCallback(() => {
+    setContextMenu(null);
+  }, []);
+
   return (
     <div
       ref={reactFlowWrapper}
@@ -340,6 +401,11 @@ const CanvasInner: React.FC = () => {
         onConnect={onConnect}
         onConnectStart={handleConnectStart}
         onConnectEnd={handleConnectEnd}
+        onNodeDrag={handleNodeDrag}
+        onNodeDragStop={handleNodeDragStop}
+        onNodeContextMenu={handleNodeContextMenu}
+        onEdgeContextMenu={handleEdgeContextMenu}
+        onPaneClick={handlePaneClick}
         snapToGrid={canvasSettings.snapToGrid}
         snapGrid={[canvasSettings.gridSize, canvasSettings.gridSize]}
         panOnDrag={!isArrowMode}
@@ -365,6 +431,7 @@ const CanvasInner: React.FC = () => {
             size={1.5}
           />
         )}
+        <HelperLinesRenderer lines={helperLines} />
         <ZoomControls />
         {canvasSettings.showMinimap && (
           <MiniMap
@@ -375,6 +442,13 @@ const CanvasInner: React.FC = () => {
           />
         )}
       </ReactFlow>
+
+      {contextMenu && (
+        <ContextMenu
+          menu={contextMenu}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
     </div>
   );
 };

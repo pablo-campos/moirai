@@ -1,7 +1,7 @@
 # Progress
 
 ## Current Status
-- **Current Phase**: Phase 6: Right configuration panel
+- **Current Phase**: Phase 7: Editor essentials
 - **Status**: Completed
 
 ## Phase Log
@@ -93,4 +93,25 @@
   - Styled all property rows, inputs, toggle switches, segmented controls, swatch pickers, and action buttons in `src/theme/theme.css` strictly using CSS variables.
   - Validated `npm run build` and `npm run check:colors` pass with zero errors.
   - Verified in browser at http://localhost:5173 that property updates visibly reflect on selected items live, duplicate/delete work, and colors remap cleanly across theme switches.
+- **Known Issues**: None.
+
+### Phase 7: Editor essentials
+- **What was done**:
+  - Implemented keyboard shortcuts manager in `src/hooks/useKeyboardShortcuts.ts`:
+    - Delete / Backspace: deletes selected elements.
+    - Ctrl+C / Cmd+C & Ctrl+V / Cmd+V: copy/paste with offset.
+    - Ctrl+D / Cmd+D: duplicate selection.
+    - Ctrl+Z / Cmd+Z & Ctrl+Shift+Z / Cmd+Shift+Z: undo and redo with `zundo`.
+    - Ctrl+A / Cmd+A: select all elements.
+    - Arrow keys: nudge selection 1px; Shift+Arrow: nudge by grid size (10px/20px).
+    - Escape: deselect all and exit arrow mode.
+    - Ctrl+0 / Cmd+0: fit view.
+    - Guarded against shortcut trigger while editing input / textarea elements.
+  - Implemented alignment helper lines in `src/lib/helperLines.ts` and `src/components/canvas/HelperLines.tsx` for real-time snapping during node drag.
+  - Implemented right-click context menu in `src/components/canvas/ContextMenu.tsx` with Bring to Front, Send to Back, Duplicate, and Delete actions.
+  - Implemented 500ms debounced autosave to `localStorage` and diagram state hydration on load in `src/lib/persistence.ts`.
+  - Added "New diagram" feature in `src/components/layout/TopBar.tsx` with confirmation modal and state reset.
+  - Styled helper lines, context menu, modal, and shortcuts in `src/theme/theme.css` using theme CSS variables.
+  - Validated `npm run build` and `npm run check:colors` pass with zero errors.
+  - Verified in browser at http://localhost:5173 that shortcuts, alignment lines, context menu, autosave/restore, and diagram resets work correctly.
 - **Known Issues**: None.

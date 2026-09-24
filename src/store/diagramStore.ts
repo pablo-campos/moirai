@@ -11,6 +11,7 @@ import {
   applyEdgeChanges,
   addEdge,
 } from '@xyflow/react';
+import { loadDiagram, saveDiagram, clearSavedDiagram } from '../lib/persistence';
 
 export type SwatchColor =
   | 'swatch-neutral'
@@ -69,6 +70,7 @@ export interface DiagramState {
   edges: Edge[];
   isArrowMode: boolean;
   canvasSettings: CanvasSettings;
+  clipboard: { nodes: Node[]; edges: Edge[] } | null;
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   onConnect: (connection: Connection) => void;
@@ -89,20 +91,33 @@ export interface DiagramState {
   distributeSelected: (direction: 'horizontal' | 'vertical') => void;
   batchUpdateSelectedNodes: (data: Partial<NodeData>) => void;
   batchUpdateSelectedEdges: (data: Partial<EdgeData>) => void;
+  bringToFront: (id?: string) => void;
+  sendToBack: (id?: string) => void;
+  copySelected: () => void;
+  pasteClipboard: () => void;
+  selectAll: () => void;
+  deselectAll: () => void;
+  nudgeSelected: (dx: number, dy: number) => void;
+  clearDiagram: () => void;
 }
+
+const initialSavedData = loadDiagram();
+
+const defaultCanvasSettings: CanvasSettings = {
+  showGrid: true,
+  snapToGrid: false,
+  gridSize: 20,
+  showMinimap: true,
+};
 
 export const useDiagramStore = create<DiagramState>()(
   temporal(
     (set, get) => ({
-      nodes: [],
-      edges: [],
+      nodes: initialSavedData?.nodes ?? [],
+      edges: initialSavedData?.edges ?? [],
       isArrowMode: false,
-      canvasSettings: {
-        showGrid: true,
-        snapToGrid: false,
-        gridSize: 20,
-        showMinimap: true,
-      },
+      canvasSettings: initialSavedData?.canvasSettings ?? defaultCanvasSettings,
+      clipboard: null,
       onNodesChange: (changes) => {
         set({
           nodes: applyNodeChanges(changes, get().nodes),
@@ -444,6 +459,131 @@ export const useDiagramStore = create<DiagramState>()(
           }),
         });
       },
+      bringToFront: (id) => {
+        const { nodes } = get();
+        const targetIds = new Set(
+          id ? [id] : nodes.filter((n) => n.selected).map((n) => n.id)
+        );
+        if (targetIds.size === 0) return;
+
+        const remaining = nodes.filter((n) => !targetIds.has(n.id));
+        const elevated = nodes.filter((n) => targetIds.has(n.id));
+        set({ nodes: [...remaining, ...elevated] });
+      },
+      sendToBack: (id) => {
+        const { nodes } = get();
+        const targetIds = new Set(
+          id ? [id] : nodes.filter((n) => n.selected).map((n) => n.id)
+        );
+        if (targetIds.size === 0) return;
+
+        const remaining = nodes.filter((n) => !targetIds.has(n.id));
+        const lowered = nodes.filter((n) => targetIds.has(n.id));
+        set({ nodes: [...lowered, ...remaining] });
+      },
+      copySelected: () => {
+        const { nodes, edges } = get();
+        const selectedNodes = nodes.filter((n) => n.selected);
+        const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
+        const internalEdges = edges.filter(
+          (e) => selectedNodeIds.has(e.source) && selectedNodeIds.has(e.target)
+        );
+
+        if (selectedNodes.length > 0) {
+          set({
+            clipboard: {
+              nodes: selectedNodes,
+              edges: internalEdges,
+            },
+          });
+        }
+      },
+      pasteClipboard: () => {
+        const { nodes, edges, clipboard } = get();
+        if (!clipboard || clipboard.nodes.length === 0) return;
+
+        const idMap = new Map<string, string>();
+        const pastedNodes: Node[] = clipboard.nodes.map((n) => {
+          const newId = `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+          idMap.set(n.id, newId);
+          return {
+            ...n,
+            id: newId,
+            selected: true,
+            position: {
+              x: n.position.x + 30,
+              y: n.position.y + 30,
+            },
+            data: { ...n.data },
+          };
+        });
+
+        const pastedEdges: Edge[] = clipboard.edges.map((e) => {
+          const newEdgeId = `edge-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+          return {
+            ...e,
+            id: newEdgeId,
+            source: idMap.get(e.source) || e.source,
+            target: idMap.get(e.target) || e.target,
+            selected: true,
+            data: { ...e.data },
+          };
+        });
+
+        const nextNodes: Node[] = [
+          ...nodes.map((n) => ({ ...n, selected: false })),
+          ...pastedNodes,
+        ];
+        const nextEdges: Edge[] = [
+          ...edges.map((e) => ({ ...e, selected: false })),
+          ...pastedEdges,
+        ];
+
+        set({
+          nodes: nextNodes,
+          edges: nextEdges,
+          // Update clipboard with shifted coordinates for subsequent pastes
+          clipboard: {
+            nodes: pastedNodes,
+            edges: pastedEdges,
+          },
+        });
+      },
+      selectAll: () => {
+        set({
+          nodes: get().nodes.map((n) => ({ ...n, selected: true })),
+          edges: get().edges.map((e) => ({ ...e, selected: true })),
+        });
+      },
+      deselectAll: () => {
+        set({
+          nodes: get().nodes.map((n) => ({ ...n, selected: false })),
+          edges: get().edges.map((e) => ({ ...e, selected: false })),
+        });
+      },
+      nudgeSelected: (dx, dy) => {
+        set({
+          nodes: get().nodes.map((node) => {
+            if (!node.selected) return node;
+            return {
+              ...node,
+              position: {
+                x: Math.round(node.position.x + dx),
+                y: Math.round(node.position.y + dy),
+              },
+            };
+          }),
+        });
+      },
+      clearDiagram: () => {
+        clearSavedDiagram();
+        set({
+          nodes: [],
+          edges: [],
+          isArrowMode: false,
+        });
+        useDiagramStore.temporal.getState().clear();
+      },
     }),
     {
       partialize: (state) => ({
@@ -454,3 +594,18 @@ export const useDiagramStore = create<DiagramState>()(
     }
   )
 );
+
+// Autosave subscription with 500ms debounce
+let autosaveTimeout: ReturnType<typeof setTimeout> | null = null;
+useDiagramStore.subscribe((state) => {
+  if (autosaveTimeout) {
+    clearTimeout(autosaveTimeout);
+  }
+  autosaveTimeout = setTimeout(() => {
+    saveDiagram({
+      nodes: state.nodes,
+      edges: state.edges,
+      canvasSettings: state.canvasSettings,
+    });
+  }, 500);
+});
