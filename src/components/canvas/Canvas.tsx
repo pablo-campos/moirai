@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useMemo, useCallback } from 'react';
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -8,10 +8,13 @@ import {
   Panel,
   useReactFlow,
   useViewport,
+  type Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Minus, Plus, Maximize2 } from 'lucide-react';
 import { useDiagramStore } from '../../store/diagramStore';
+import { getComponentByType } from '../registry';
+import { IconNode } from './nodes/IconNode';
 
 const ZoomControls: React.FC = () => {
   const { zoomIn, zoomOut, fitView, zoomTo } = useReactFlow();
@@ -67,42 +70,131 @@ const ZoomControls: React.FC = () => {
 };
 
 const CanvasInner: React.FC = () => {
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useDiagramStore();
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const { screenToFlowPosition } = useReactFlow();
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode } = useDiagramStore();
+
+  const nodeTypes = useMemo(() => ({ icon: IconNode }), []);
+
+  const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const handleDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      const type = event.dataTransfer.getData('application/reactflow/type');
+      if (!type) return;
+
+      const def = getComponentByType(type);
+      if (!def) return;
+
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      const newNode: Node = {
+        id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        type: def.nodeKind === 'icon' ? 'icon' : def.nodeKind,
+        position: {
+          x: position.x - 24,
+          y: position.y - 24,
+        },
+        data: {
+          componentType: def.type,
+          label: def.label,
+        },
+      };
+
+      addNode(newNode);
+    },
+    [screenToFlowPosition, addNode]
+  );
+
+  useEffect(() => {
+    const handleAddAtCenter = (event: Event) => {
+      const customEvent = event as CustomEvent<{ type: string }>;
+      const type = customEvent.detail?.type;
+      if (!type) return;
+
+      const def = getComponentByType(type);
+      if (!def) return;
+
+      const bounds = reactFlowWrapper.current?.getBoundingClientRect();
+      const centerScreen = bounds
+        ? {
+            x: bounds.left + bounds.width / 2,
+            y: bounds.top + bounds.height / 2,
+          }
+        : {
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+          };
+
+      const position = screenToFlowPosition(centerScreen);
+
+      const newNode: Node = {
+        id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        type: def.nodeKind === 'icon' ? 'icon' : def.nodeKind,
+        position: {
+          x: position.x - 24,
+          y: position.y - 24,
+        },
+        data: {
+          componentType: def.type,
+          label: def.label,
+        },
+      };
+
+      addNode(newNode);
+    };
+
+    window.addEventListener('add-node-at-center', handleAddAtCenter);
+    return () => {
+      window.removeEventListener('add-node-at-center', handleAddAtCenter);
+    };
+  }, [screenToFlowPosition, addNode]);
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnect={onConnect}
-      panOnDrag={true}
-      zoomOnScroll={true}
-      panOnScroll={false}
-      selectionOnDrag={false}
-      selectionKeyCode="Shift"
-      minZoom={0.1}
-      maxZoom={4}
-      nodesDraggable={true}
-      fitView={false}
-      proOptions={{ hideAttribution: true }}
-      className="diagram-react-flow"
-    >
-      <Background
-        variant={BackgroundVariant.Dots}
-        color="var(--canvas-dot)"
-        bgColor="var(--bg-canvas)"
-        gap={20}
-        size={1.5}
-      />
-      <ZoomControls />
-      <MiniMap
-        position="bottom-right"
-        className="canvas-minimap"
-        zoomable
-        pannable
-      />
-    </ReactFlow>
+    <div ref={reactFlowWrapper} className="canvas-wrapper" onDragOver={handleDragOver} onDrop={handleDrop}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        panOnDrag={true}
+        zoomOnScroll={true}
+        panOnScroll={false}
+        selectionOnDrag={false}
+        selectionKeyCode="Shift"
+        minZoom={0.1}
+        maxZoom={4}
+        nodesDraggable={true}
+        fitView={false}
+        proOptions={{ hideAttribution: true }}
+        className="diagram-react-flow"
+      >
+        <Background
+          variant={BackgroundVariant.Dots}
+          color="var(--canvas-dot)"
+          bgColor="var(--bg-canvas)"
+          gap={20}
+          size={1.5}
+        />
+        <ZoomControls />
+        <MiniMap
+          position="bottom-right"
+          className="canvas-minimap"
+          zoomable
+          pannable
+        />
+      </ReactFlow>
+    </div>
   );
 };
 

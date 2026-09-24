@@ -11,6 +11,12 @@ import {
   addEdge,
 } from '@xyflow/react';
 
+export interface IconNodeData {
+  componentType: string;
+  label: string;
+  [key: string]: unknown;
+}
+
 export interface DiagramState {
   nodes: Node[];
   edges: Edge[];
@@ -19,36 +25,15 @@ export interface DiagramState {
   onConnect: (connection: Connection) => void;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
+  addNode: (node: Node) => void;
+  updateNodeLabel: (id: string, label: string) => void;
 }
-
-const initialNodes: Node[] = [
-  {
-    id: 'node-1',
-    type: 'default',
-    position: { x: 200, y: 180 },
-    data: { label: 'API Gateway' },
-  },
-  {
-    id: 'node-2',
-    type: 'default',
-    position: { x: 440, y: 180 },
-    data: { label: 'Auth Service' },
-  },
-];
-
-const initialEdges: Edge[] = [
-  {
-    id: 'edge-1-2',
-    source: 'node-1',
-    target: 'node-2',
-  },
-];
 
 export const useDiagramStore = create<DiagramState>()(
   temporal(
     (set, get) => ({
-      nodes: initialNodes,
-      edges: initialEdges,
+      nodes: [],
+      edges: [],
       onNodesChange: (changes) => {
         set({
           nodes: applyNodeChanges(changes, get().nodes),
@@ -66,6 +51,27 @@ export const useDiagramStore = create<DiagramState>()(
       },
       setNodes: (nodes) => set({ nodes }),
       setEdges: (edges) => set({ edges }),
+      addNode: (node) => {
+        set({
+          nodes: [...get().nodes, node],
+        });
+      },
+      updateNodeLabel: (id, label) => {
+        set({
+          nodes: get().nodes.map((node) => {
+            if (node.id === id) {
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  label,
+                },
+              };
+            }
+            return node;
+          }),
+        });
+      },
     }),
     {
       partialize: (state) => ({

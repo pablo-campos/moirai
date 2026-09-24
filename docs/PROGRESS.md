@@ -1,7 +1,7 @@
 # Progress
 
 ## Current Status
-- **Current Phase**: Phase 2: Canvas (pan/zoom)
+- **Current Phase**: Phase 3: Component registry, palette, icon nodes
 - **Status**: Completed
 
 ## Phase Log
@@ -41,4 +41,16 @@
   - Overrode React Flow's CSS variables and node/selection styles in `src/theme/theme.css` using theme tokens.
   - Validated `npm run build` and `npm run check:colors` passed with zero errors.
   - Verified all Phase 2 acceptance criteria and interactions via browser automation at http://localhost:5173 in both Light and Dark themes.
+- **Known Issues**: None.
+
+### Phase 3: Component registry, palette, icon nodes
+- **What was done**:
+  - Created `src/components/registry.ts` with all 23 components across 6 categories (Basics, Clients, Network, Compute & Data, DevOps, Other) per `docs/specs/components.md`, along with `DynamicIcon` helper.
+  - Implemented `LeftSidebar.tsx` with live search filtering, collapsible category accordion groups with item counts, draggable tiles, and click-to-add support.
+  - Implemented custom `IconNode.tsx` with 40px Lucide icons (stroke `var(--node-icon)`), inline editable label (double-click to edit, Enter/blur to commit, Escape to cancel), 4 connection handles (top/right/bottom/left visible on hover/selection), and subtle `var(--selection)` outline.
+  - Wired drag-and-drop and viewport center placement in `Canvas.tsx` using `screenToFlowPosition`.
+  - Cleaned up temporary test nodes from Phase 2 in `src/store/diagramStore.ts`.
+  - Styled palette and icon nodes in `src/theme/theme.css` strictly using CSS variables.
+  - Validated `npm run build` and `npm run check:colors` passed with zero errors.
+  - Verified in browser at http://localhost:5173 that all 20 icon components can be added via drag/click, labels are editable inline, search filters correctly, handles/selection work, and theming renders cleanly in both Light and Dark modes.
 - **Known Issues**: None.
