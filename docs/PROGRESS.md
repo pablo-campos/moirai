@@ -164,3 +164,13 @@
   - Passed `npm run build` and `npm run check:colors` with zero errors.
   - Verified changes via browser subagent automation at http://localhost:5173.
 - **Known Issues**: None.
+
+### Empty Canvas Dialog Brand Logo & App Name Update
+- **What was done**:
+  - Added brand logo (`LOGO_SRC` from [brand.ts](file:///Users/pablocampos/Development/Repositories/moirai/src/config/brand.ts)) sized at 56px at the top center of the Empty Canvas hint card in [Canvas.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/canvas/Canvas.tsx).
+  - Added app name (`APP_NAME` from [brand.ts](file:///Users/pablocampos/Development/Repositories/moirai/src/config/brand.ts)) centered directly beneath the brand logo.
+  - Styled centered layout, typography, and spacing in [theme.css](file:///Users/pablocampos/Development/Repositories/moirai/src/theme/theme.css) strictly using design system tokens.
+  - Passed `npm run build` and `npm run check:colors` with zero errors.
+  - Verified visual appearance in browser at http://localhost:5173 across dark and light themes.
+- **Known Issues**: None.
+
