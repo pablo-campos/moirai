@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100..800&display=swap');
+
 :root,
 :root[data-theme="light"] {
   --bg-app: #f4f4f5;
@@ -132,6 +134,7 @@ button {
 .top-bar-brand {
   display: flex;
   align-items: center;
+  height: 100%;
   gap: 10px;
   user-select: none;
 }
@@ -142,19 +145,26 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .top-bar-logo img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  display: block;
 }
 
 .top-bar-title {
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  font-family: 'Martian Mono', monospace;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  transform: translateY(2px);
 }
 
 .top-bar-actions {
@@ -1586,10 +1596,11 @@ button {
 }
 
 .empty-hint-brand {
-  font-size: 16px;
+  font-family: 'Martian Mono', monospace;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   margin-bottom: 2px;
 }
 

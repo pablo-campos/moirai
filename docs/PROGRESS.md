@@ -181,3 +181,15 @@
   - Verified in browser at http://localhost:5173.
 - **Known Issues**: None.
 
+### Brand Typography: Martian Mono
+- **What was done**:
+  - Loaded `Martian Mono` variable font from Google Fonts in [index.html](file:///Users/pablocampos/Development/Repositories/moirai/index.html) and [theme.css](file:///Users/pablocampos/Development/Repositories/moirai/src/theme/theme.css).
+  - Applied `font-family: 'Martian Mono', monospace` to `.top-bar-title` in the navbar and `.empty-hint-brand` in the empty canvas onboarding card.
+  - Adjusted `.top-bar-brand`, `.top-bar-logo`, and `.top-bar-title` line box alignment (`line-height: 1`, `inline-flex`, `align-items: center`, `height: 100%`, `transform: translateY(2px)`) for visual centering relative to the logo and navbar.
+  - Verified `npm run build` and `npm run check:colors` pass with zero errors.
+  - Verified in browser at http://localhost:5173 that the app name renders in Martian Mono in both locations across light and dark modes.
+- **Known Issues**: None.
+
+
+
+
