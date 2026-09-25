@@ -8,18 +8,18 @@
   <strong>A modern, minimalist canvas for designing and communicating system architectures.</strong>
 </p>
 
-<p align="center">
-  <a href="#overview">Overview</a> •
-  <a href="#key-features">Key Features</a> •
-  <a href="#architecture-review">Architecture Review</a> •
-  <a href="#the-use-of-ai">The Use of AI</a> •
-  <a href="#scaling-roadmap">Scaling Roadmap</a> •
-  <a href="#getting-started">Getting Started</a>
-</p>
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Architecture Review](#architecture-review)
+- [The Use of AI](#the-use-of-ai)
+- [Scaling Roadmap](#scaling-roadmap)
+- [Getting Started](#getting-started)
 
 ---
 
 ## Overview
+
+![Moirai Interface](./public/screenshot.png)
 
 **Moirai** is a lightweight, local-first web application designed specifically for software engineers, systems architects, and technical leaders to draft, visualize, and communicate system designs with clarity and speed.
 
