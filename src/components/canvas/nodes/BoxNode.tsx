@@ -18,7 +18,7 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
     fillColor === 'transparent'
       ? 'transparent'
       : fillColor
-      ? `var(--${fillColor})`
+      ? `var(--${fillColor}-alpha, var(--${fillColor}))`
       : 'var(--node-fill)';
 
   const strokeVal = strokeColor ? `var(--${strokeColor})` : 'var(--node-stroke)';

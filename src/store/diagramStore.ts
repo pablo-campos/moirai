@@ -30,6 +30,14 @@ export const SWATCH_COLORS: SwatchColor[] = [
   'swatch-violet',
 ];
 
+export const BOX_FILL_COLORS: SwatchColor[] = [
+  'swatch-blue',
+  'swatch-green',
+  'swatch-amber',
+  'swatch-red',
+  'swatch-violet',
+];
+
 export interface CanvasSettings {
   showGrid: boolean;
   snapToGrid: boolean;

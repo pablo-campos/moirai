@@ -146,3 +146,16 @@
   - Verified changes in browser at http://localhost:5173.
 - **Known Issues**: None.
 
+### Properties Panel Layout & Box Fill Swatch Updates
+- **What was done**:
+  - Updated `.prop-row-inline` in [theme.css](file:///Users/pablocampos/Development/Repositories/moirai/src/theme/theme.css) so toggle switches (Show grid, Snap to grid, Show minimap) have labels aligned on the far left end and switches on the far right end.
+  - Updated "Lock position" row in [RightSidebar.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/layout/RightSidebar.tsx) and [theme.css](file:///Users/pablocampos/Development/Repositories/moirai/src/theme/theme.css) so the label is aligned on the far left end and the lock button is on the far right end.
+  - Defined 30% alpha color tokens (`--swatch-*-alpha`) in [theme.css](file:///Users/pablocampos/Development/Repositories/moirai/src/theme/theme.css) for both light and dark themes.
+  - Exported `BOX_FILL_COLORS` in [diagramStore.ts](file:///Users/pablocampos/Development/Repositories/moirai/src/store/diagramStore.ts) excluding black/white neutral swatches.
+  - Updated Box node "Fill color" menu in [RightSidebar.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/layout/RightSidebar.tsx) to display transparent + the 5 non-neutral color swatches with 30% alpha styling.
+  - Updated [BoxNode.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/canvas/nodes/BoxNode.tsx) to render box polygon backgrounds with 30% alpha fills when color swatches are selected.
+  - Verified `npm run build` and `npm run check:colors` pass with zero errors.
+  - Verified all layout and alpha styling changes in the browser at http://localhost:5173.
+- **Known Issues**: None.
+
+

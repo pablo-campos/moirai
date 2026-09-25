@@ -21,6 +21,8 @@ import {
 import {
   useDiagramStore,
   SWATCH_COLORS,
+  BOX_FILL_COLORS,
+  type SwatchColor,
 } from '../../store/diagramStore';
 
 // Color Swatch Picker Component
@@ -28,12 +30,16 @@ interface ColorSwatchPickerProps {
   value?: string;
   onChange: (colorToken: string) => void;
   allowTransparent?: boolean;
+  colors?: SwatchColor[];
+  alpha?: boolean;
 }
 
 const ColorSwatchPicker: React.FC<ColorSwatchPickerProps> = ({
   value,
   onChange,
   allowTransparent = false,
+  colors = SWATCH_COLORS,
+  alpha = false,
 }) => {
   return (
     <div className="swatch-picker" role="radiogroup">
@@ -48,12 +54,14 @@ const ColorSwatchPicker: React.FC<ColorSwatchPickerProps> = ({
           <Ban size={12} />
         </button>
       )}
-      {SWATCH_COLORS.map((token) => (
+      {colors.map((token) => (
         <button
           key={token}
           type="button"
-          className={`swatch-btn ${value === token ? 'active' : ''}`}
-          style={{ backgroundColor: `var(--${token})` }}
+          className={`swatch-btn ${alpha ? 'alpha-swatch' : ''} ${value === token ? 'active' : ''}`}
+          style={{
+            backgroundColor: alpha ? `var(--${token}-alpha)` : `var(--${token})`,
+          }}
           onClick={() => onChange(token)}
           title={token.replace('swatch-', '')}
           aria-label={token}
@@ -362,6 +370,8 @@ export const RightSidebar: React.FC = () => {
                 value={fill}
                 onChange={(val) => updateNodeData(node.id, { fill: val })}
                 allowTransparent
+                colors={BOX_FILL_COLORS}
+                alpha
               />
             </FormRow>
 
