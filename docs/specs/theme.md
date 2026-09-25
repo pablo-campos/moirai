@@ -6,6 +6,7 @@ Create it with exactly these tokens:
 ```css
 :root,
 :root[data-theme="light"] {
+  --theme-transition-duration: 1s;
   --bg-app: #f4f4f5;
   --bg-panel: #ffffff;
   --bg-canvas: #ffffff;
@@ -30,10 +31,17 @@ Create it with exactly these tokens:
   --swatch-amber: #d97706;
   --swatch-red: #dc2626;
   --swatch-violet: #7c3aed;
+  --swatch-neutral-alpha: rgb(24 24 27 / 0.3);
+  --swatch-blue-alpha: rgb(37 99 235 / 0.3);
+  --swatch-green-alpha: rgb(13 166 81 / 0.3);
+  --swatch-amber-alpha: rgb(217 119 6 / 0.3);
+  --swatch-red-alpha: rgb(220 38 38 / 0.3);
+  --swatch-violet-alpha: rgb(124 58 237 / 0.3);
   --shadow: 0 1px 3px rgb(0 0 0 / 0.08), 0 4px 12px rgb(0 0 0 / 0.05);
 }
 
 :root[data-theme="dark"] {
+  --theme-transition-duration: 1s;
   --bg-app: #000000;
   --bg-panel: #0a0a0c;
   --bg-canvas: #000000;
@@ -58,6 +66,12 @@ Create it with exactly these tokens:
   --swatch-amber: #fbbf24;
   --swatch-red: #f87171;
   --swatch-violet: #a78bfa;
+  --swatch-neutral-alpha: rgb(212 212 216 / 0.3);
+  --swatch-blue-alpha: rgb(56 189 248 / 0.3);
+  --swatch-green-alpha: rgb(16 232 106 / 0.3);
+  --swatch-amber-alpha: rgb(251 191 36 / 0.3);
+  --swatch-red-alpha: rgb(248 113 113 / 0.3);
+  --swatch-violet-alpha: rgb(167 139 250 / 0.3);
   --shadow: 0 1px 3px rgb(0 0 0 / 0.7), 0 4px 16px rgb(0 0 0 / 0.6);
 }
 ```

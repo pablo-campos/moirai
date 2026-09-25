@@ -2,6 +2,7 @@
 
 :root,
 :root[data-theme="light"] {
+  --theme-transition-duration: 1s;
   --bg-app: #f4f4f5;
   --bg-panel: #ffffff;
   --bg-canvas: #ffffff;
@@ -36,6 +37,7 @@
 }
 
 :root[data-theme="dark"] {
+  --theme-transition-duration: 1s;
   --bg-app: #000000;
   --bg-panel: #0a0a0c;
   --bg-canvas: #000000;
@@ -75,6 +77,13 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  transition: background-color var(--theme-transition-duration) ease,
+              border-color var(--theme-transition-duration) ease,
+              color var(--theme-transition-duration) ease,
+              fill var(--theme-transition-duration) ease,
+              stroke var(--theme-transition-duration) ease,
+              box-shadow var(--theme-transition-duration) ease,
+              outline-color var(--theme-transition-duration) ease;
 }
 
 html,
@@ -182,12 +191,13 @@ button {
   height: 32px;
   border-radius: 8px;
   color: var(--text-secondary);
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .icon-button:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .icon-button:active,
@@ -254,11 +264,12 @@ button {
   font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
-  transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease, box-shadow var(--theme-transition-duration) ease;
 }
 
 .segmented-button:hover {
   color: var(--text-primary);
+  transition: color 150ms ease;
 }
 
 .segmented-button.active {
@@ -339,11 +350,12 @@ button {
   border-radius: 6px;
   padding: 0 8px;
   height: 30px;
-  transition: border-color 150ms ease;
+  transition: border-color var(--theme-transition-duration) ease, background-color var(--theme-transition-duration) ease;
 }
 
 .palette-search-box:focus-within {
   border-color: var(--accent);
+  transition: border-color 150ms ease;
 }
 
 .palette-search-icon {
@@ -400,12 +412,13 @@ button {
   padding: 4px 6px;
   border-radius: 6px;
   color: var(--text-secondary);
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .palette-category-header:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .palette-category-title-group {
@@ -449,12 +462,13 @@ button {
   user-select: none;
   gap: 4px;
   min-height: 64px;
-  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, border-color var(--theme-transition-duration) ease, transform 150ms ease;
 }
 
 .palette-tile:hover {
   background-color: var(--bg-hover);
   border-color: var(--accent);
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
 
 .palette-tile:active {
@@ -635,7 +649,7 @@ button {
   fill: var(--node-fill);
   stroke: var(--node-stroke);
   stroke-width: 1.5;
-  transition: fill 150ms ease, stroke 150ms ease;
+  transition: fill var(--theme-transition-duration) ease, stroke var(--theme-transition-duration) ease;
 }
 
 .box-node-container.selected .box-node-polygon {
@@ -763,7 +777,7 @@ button {
   border-radius: 8px;
   padding: 10px 16px;
   box-shadow: var(--shadow);
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition: border-color var(--theme-transition-duration) ease, box-shadow var(--theme-transition-duration) ease, background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .react-flow__node-default.selected,
@@ -835,7 +849,7 @@ button {
 }
 
 .rectangle-node-rect {
-  transition: fill 150ms ease, stroke 150ms ease;
+  transition: fill var(--theme-transition-duration) ease, stroke var(--theme-transition-duration) ease;
 }
 
 .rectangle-node-text-content {
@@ -937,11 +951,12 @@ button {
   box-shadow: var(--shadow);
   cursor: text;
   user-select: none;
-  transition: border-color 150ms ease;
+  transition: border-color var(--theme-transition-duration) ease, background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .orthogonal-edge-label:hover {
   border-color: var(--accent);
+  transition: border-color 150ms ease;
 }
 
 .orthogonal-edge-label-container.selected .orthogonal-edge-label {
@@ -963,6 +978,7 @@ button {
 .orthogonal-edge-label-placeholder:hover {
   color: var(--text-primary);
   border-color: var(--accent);
+  transition: color 150ms ease, border-color 150ms ease;
 }
 
 .orthogonal-edge-label-input {
@@ -1009,12 +1025,13 @@ button {
   height: 26px;
   border-radius: 6px;
   color: var(--text-secondary);
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .zoom-btn:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .zoom-btn:active {
@@ -1033,12 +1050,13 @@ button {
   font-size: 12px;
   font-weight: 500;
   color: var(--text-secondary);
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .zoom-level-btn:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .zoom-divider {
@@ -1125,12 +1143,13 @@ button {
   border: 1px solid var(--border);
   border-radius: 6px;
   outline: none;
-  transition: border-color 150ms ease, background-color 150ms ease;
+  transition: border-color var(--theme-transition-duration) ease, background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .prop-input:focus {
   border-color: var(--accent);
   background-color: var(--bg-panel);
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 
 .prop-textarea {
@@ -1144,12 +1163,13 @@ button {
   border-radius: 6px;
   outline: none;
   resize: vertical;
-  transition: border-color 150ms ease, background-color 150ms ease;
+  transition: border-color var(--theme-transition-duration) ease, background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .prop-textarea:focus {
   border-color: var(--accent);
   background-color: var(--bg-panel);
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 
 .prop-slider-row {
@@ -1190,13 +1210,14 @@ button {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  transition: transform 150ms ease, border-color var(--theme-transition-duration) ease, box-shadow var(--theme-transition-duration) ease;
   position: relative;
   padding: 0;
 }
 
 .swatch-btn:hover {
   transform: scale(1.15);
+  transition: transform 150ms ease;
 }
 
 .swatch-btn.active {
@@ -1253,11 +1274,12 @@ button {
   font-weight: 500;
   color: var(--text-secondary);
   border-radius: 4px;
-  transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease, box-shadow var(--theme-transition-duration) ease;
 }
 
 .right-sidebar .segmented-btn:hover {
   color: var(--text-primary);
+  transition: color 150ms ease;
 }
 
 .right-sidebar .segmented-btn.active {
@@ -1288,7 +1310,7 @@ button {
   background-color: var(--bg-hover);
   border: 1px solid var(--border);
   border-radius: 20px;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, border-color var(--theme-transition-duration) ease;
 }
 
 .toggle-slider::before {
@@ -1300,7 +1322,7 @@ button {
   bottom: 2px;
   background-color: var(--text-muted);
   border-radius: 50%;
-  transition: transform 150ms ease, background-color 150ms ease;
+  transition: transform 150ms ease, background-color var(--theme-transition-duration) ease;
 }
 
 .toggle-switch input:checked + .toggle-slider {
@@ -1324,12 +1346,13 @@ button {
   background-color: var(--bg-hover);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease, border-color var(--theme-transition-duration) ease;
 }
 
 .lock-toggle-btn:hover {
   background-color: var(--bg-panel);
   color: var(--text-primary);
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
 .lock-toggle-btn.locked {
@@ -1358,13 +1381,14 @@ button {
   background-color: var(--bg-hover);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease, border-color var(--theme-transition-duration) ease;
 }
 
 .icon-action-btn:hover {
   background-color: var(--bg-panel);
   color: var(--text-primary);
   border-color: var(--accent);
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
 /* Actions at bottom of properties panel */
@@ -1387,7 +1411,7 @@ button {
   border-radius: 6px;
   font-size: 12px;
   font-weight: 500;
-  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease, border-color var(--theme-transition-duration) ease;
 }
 
 .duplicate-btn {
@@ -1398,6 +1422,7 @@ button {
 
 .duplicate-btn:hover {
   background-color: var(--bg-active);
+  transition: background-color 150ms ease;
 }
 
 .delete-btn {
@@ -1409,6 +1434,7 @@ button {
 .delete-btn:hover {
   background-color: var(--bg-hover);
   border-color: var(--swatch-red);
+  transition: background-color 150ms ease, border-color 150ms ease;
 }
 
 /* Icon Node Position and Size Variations */
@@ -1495,11 +1521,12 @@ button {
   color: var(--text-primary);
   width: 100%;
   text-align: left;
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .context-menu-item:hover {
   background-color: var(--bg-hover);
+  transition: background-color 150ms ease;
 }
 
 .context-menu-item-danger {
@@ -1509,6 +1536,7 @@ button {
 .context-menu-item-danger:hover {
   background-color: var(--bg-hover);
   color: var(--swatch-red);
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .context-menu-shortcut {
@@ -1547,12 +1575,13 @@ button {
   color: var(--text-primary);
   background-color: var(--bg-hover);
   border: 1px solid var(--border);
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, border-color var(--theme-transition-duration) ease;
 }
 
 .popover-menu-btn:hover {
   background-color: var(--bg-panel);
   border-color: var(--accent);
+  transition: background-color 150ms ease, border-color 150ms ease;
 }
 
 .popover-confirm-box {
@@ -1595,7 +1624,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .confirm-cancel {
@@ -1606,6 +1635,7 @@ button {
 
 .confirm-cancel:hover {
   color: var(--text-primary);
+  transition: color 150ms ease;
 }
 
 .confirm-action {
@@ -1616,6 +1646,7 @@ button {
 
 .confirm-action:hover {
   opacity: 0.9;
+  transition: opacity 150ms ease;
 }
 
 /* ==========================================================================
@@ -1773,12 +1804,13 @@ button {
   height: 24px;
   border-radius: 4px;
   color: var(--text-secondary);
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 .modal-close-btn:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .modal-body {
@@ -1818,6 +1850,3 @@ button {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
-
-
-

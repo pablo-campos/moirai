@@ -210,7 +210,15 @@
   - Updated Empty Canvas hint dialog: doubled brand logo size from 56px to 112px, increased brand title font size to 22px, and adjusted spacing and card padding.
   - Verified `npm run build` and `npm run check:colors` pass with zero errors.
   - Verified in browser at http://localhost:5173 that Rectangle is first in Basics, Text Box is second, and properties panels render with updated options.
+### Theme Color Transition & Duration Token
+- **What was done**:
+  - Added `--theme-transition-duration: 1s` token in [theme.css](file:///Users/pablocampos/Development/Repositories/moirai/src/theme/theme.css) and updated [theme.md](file:///Users/pablocampos/Development/Repositories/moirai/docs/specs/theme.md) so the transition time can be adjusted in one place.
+  - Implemented smooth global color transitions for `background-color`, `border-color`, `color`, `fill`, `stroke`, `box-shadow`, and `outline-color` over `var(--theme-transition-duration)`.
+  - Configured base component styles to transition with `var(--theme-transition-duration)` during theme switches while preserving quick 150ms responsive hover and active states.
+  - Verified `npm run build` and `npm run check:colors` pass with zero errors.
+  - Verified in browser at http://localhost:5173 that switching between Light and Dark themes smoothly blends all surface backgrounds, sidebars, top bar, canvas dots, nodes, text, and icons over 1 second.
 - **Known Issues**: None.
+
 
 
 
