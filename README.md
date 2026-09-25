@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./public/logo.svg" alt="Moirai Logo" width="88" height="88" />
+  <img src="./public/logo.svg" alt="Moirai Logo" width="264" height="264" />
 </p>
 
 <h1 align="center">Moirai</h1>
