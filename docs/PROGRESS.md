@@ -156,6 +156,11 @@
   - Updated [BoxNode.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/canvas/nodes/BoxNode.tsx) to render box polygon backgrounds with 30% alpha fills when color swatches are selected.
   - Verified `npm run build` and `npm run check:colors` pass with zero errors.
   - Verified all layout and alpha styling changes in the browser at http://localhost:5173.
+### Eclipse Brand Logo & Favicon Update
+- **What was done**:
+  - Re-designed [public/logo.svg](file:///Users/pablocampos/Development/Repositories/moirai/public/logo.svg) and [public/favicon.svg](file:///Users/pablocampos/Development/Repositories/moirai/public/favicon.svg) to feature a modern solar eclipse motif with clean horizontal overlap.
+  - Implemented an eclipse design composed of a luminous accent gradient crescent (`#10e86a` to `#059669`) extending vertically along the left rim, a full thin corona ring, transparent lunar cutout mask, and a diamond ring specular flare beacon at the crescent apex.
+  - Verified crisp rendering, high contrast, and balanced legibility across both Dark and Light themes.
+  - Passed `npm run build` and `npm run check:colors` with zero errors.
+  - Verified changes via browser subagent automation at http://localhost:5173.
 - **Known Issues**: None.
-
-
