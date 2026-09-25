@@ -105,13 +105,13 @@ export const OrthogonalEdge: React.FC<EdgeProps> = ({
           <marker
             id={markerStartId}
             viewBox="0 0 10 10"
-            refX="3"
+            refX="7"
             refY="5"
             markerWidth={6 + strokeWidth}
             markerHeight={6 + strokeWidth}
             orient="auto-start-reverse"
           >
-            <path d="M 10 0 L 0 5 L 10 10 z" fill={strokeColor} />
+            <path d="M 0 0 L 10 5 L 0 10 z" fill={strokeColor} />
           </marker>
         )}
         {showMarkerEnd && (

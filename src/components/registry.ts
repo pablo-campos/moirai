@@ -45,7 +45,6 @@ export interface ComponentDefinition {
 
 export const COMPONENT_REGISTRY: ComponentDefinition[] = [
   // Basics
-  { type: 'arrow', label: 'Arrow', icon: 'MoveRight', category: 'Basics', nodeKind: 'tool' },
   { type: 'box', label: 'Box', icon: 'Hexagon', category: 'Basics', nodeKind: 'box' },
 
   // Clients

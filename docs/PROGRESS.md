@@ -132,3 +132,17 @@
   - Verified local production preview (`npm run preview`) runs with zero errors.
   - Verified in browser at http://localhost:5173 that empty canvas hints, PNG/SVG/JSON export, JSON import, and dark/light themes work cleanly.
 - **Known Issues**: None.
+
+### Theme, Branding & Arrow Polish Updates
+- **What was done**:
+  - Renamed application to "Moirai" across `src/config/brand.ts` and `index.html`.
+  - Removed "Arrow" component from the left sidebar Basics category in `src/components/registry.ts` and updated `docs/specs/components.md`.
+  - Updated SVG arrowhead marker definitions in `src/components/canvas/edges/OrthogonalEdge.tsx` so start and end arrowheads always point outward away from the connection line toward the attached components (`orient="auto-start-reverse"` on start marker).
+  - Updated dark theme to use pure pitch black (`#000000`) for the canvas and app background with `#0a0a0c` sidebars in `src/theme/theme.css`.
+  - Updated light theme to use crisp black (`#000000`) text, node borders, and icons for contrast.
+  - Updated theme color accents (`--accent`, `--selection`, `--swatch-green`) to vibrant neon green (`#10e86a` / `#0da651`).
+  - Synchronized `docs/specs/theme.md` with new color tokens.
+  - Passed `npm run build` and `npm run check:colors` with 0 errors.
+  - Verified changes in browser at http://localhost:5173.
+- **Known Issues**: None.
+
