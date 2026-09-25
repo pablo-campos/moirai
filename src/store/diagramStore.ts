@@ -57,8 +57,9 @@ export interface NodeData {
   textAlign?: 'left' | 'center' | 'right';
   fill?: string; // swatch token name or 'transparent'
   strokeColor?: string; // swatch token name
-  strokeStyle?: 'solid' | 'dashed';
+  strokeStyle?: 'solid' | 'dashed' | 'dotted';
   width?: number;
+  height?: number;
   [key: string]: unknown;
 }
 

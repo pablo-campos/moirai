@@ -22,10 +22,11 @@ import {
   Cloud,
   Sparkles,
   Hexagon,
+  Square,
   type LucideProps,
 } from 'lucide-react';
 
-export type NodeKind = 'tool' | 'box' | 'icon';
+export type NodeKind = 'tool' | 'box' | 'rectangle' | 'icon';
 
 export type ComponentCategory =
   | 'Basics'
@@ -45,7 +46,8 @@ export interface ComponentDefinition {
 
 export const COMPONENT_REGISTRY: ComponentDefinition[] = [
   // Basics
-  { type: 'box', label: 'Box', icon: 'Hexagon', category: 'Basics', nodeKind: 'box' },
+  { type: 'rectangle', label: 'Rectangle', icon: 'Square', category: 'Basics', nodeKind: 'rectangle' },
+  { type: 'box', label: 'Text Box', icon: 'Hexagon', category: 'Basics', nodeKind: 'box' },
 
   // Clients
   { type: 'browser', label: 'Browser', icon: 'Monitor', category: 'Clients', nodeKind: 'icon' },
@@ -90,6 +92,7 @@ export const CATEGORIES: ComponentCategory[] = [
 const ICON_MAP: Record<string, React.FC<LucideProps>> = {
   MoveRight,
   Hexagon,
+  Square,
   Monitor,
   Smartphone,
   ShieldCheck,

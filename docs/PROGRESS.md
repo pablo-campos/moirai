@@ -190,6 +190,32 @@
   - Verified in browser at http://localhost:5173 that the app name renders in Martian Mono in both locations across light and dark modes.
 - **Known Issues**: None.
 
+### Sci-Fi / Anime Tech Frame Box Node Styling
+- **What was done**:
+  - Enhanced [boxGeometry.ts](file:///Users/pablocampos/Development/Repositories/moirai/src/lib/boxGeometry.ts) with `getBoxTechFrameGeometry` generating multi-rail top/bottom floating borders with notches, layered outer/inner chevron brackets (`<<` and `>>`), heavy corner shoulder ticks, and subtle interior circuit lines.
+  - Updated [BoxNode.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/canvas/nodes/BoxNode.tsx) to render full layered SVG framing adapting smoothly to horizontal width resizing and dynamic multi-line height expansion.
+  - Preserved color swatch customization, connection handles, and selection states in both Light and Dark themes.
+  - Verified `npm run build` and `npm run check:colors` pass with zero errors.
+  - Verified in browser at http://localhost:5173 that Box nodes render crisp tech frames in both unselected and selected states across themes.
+- **Known Issues**: None.
+
+### Rectangle Component & Text Box Refinements
+- **What was done**:
+  - Reordered Basics category in [registry.ts](file:///Users/pablocampos/Development/Repositories/moirai/src/components/registry.ts) and [components.md](file:///Users/pablocampos/Development/Repositories/moirai/docs/specs/components.md) so `Rectangle` is listed first and `Text Box` (renamed from `Box`) is listed second.
+  - Implemented [RectangleNode.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/canvas/nodes/RectangleNode.tsx) with sharp 90-degree corners (`rx={0}`, `ry={0}`), transparent or swatch alpha fill, stroke colors, stroke styles (solid, dashed, dotted), 2D `NodeResizer`, 4 connection handles, and optional inline editable text (empty by default).
+  - Registered `rectangle` in [Canvas.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/canvas/Canvas.tsx) and updated drag/drop & click-to-add handlers.
+  - Updated [RightSidebar.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/layout/RightSidebar.tsx):
+    - Renamed properties panel header to "Text Box Properties" and removed "Fill color" and "Stroke style" controls.
+    - Added dedicated Rectangle properties panel with Text, Font size, Text align, Fill color, Stroke color, Stroke style (Solid, Dashed, Dotted), Width & Height sliders.
+  - Added Rectangle styling in [theme.css](file:///Users/pablocampos/Development/Repositories/moirai/src/theme/theme.css) and updated [diagramStore.ts](file:///Users/pablocampos/Development/Repositories/moirai/src/store/diagramStore.ts).
+  - Verified `npm run build` and `npm run check:colors` pass with zero errors.
+  - Verified in browser at http://localhost:5173 that Rectangle is first in Basics, Text Box is second, and properties panels render with updated options.
+- **Known Issues**: None.
+
+
+
+
+
 
 
 

@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import { Handle, Position, NodeResizer, type NodeProps, type ResizeParams } from '@xyflow/react';
-import { boxPoints } from '../../../lib/boxGeometry';
+import { getBoxTechFrameGeometry } from '../../../lib/boxGeometry';
 import { useDiagramStore, type NodeData } from '../../../store/diagramStore';
 
 export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
   const nodeData = data as unknown as NodeData;
-  const initialText = (nodeData.text ?? nodeData.label ?? 'Service Box').toString();
+  const initialText = (nodeData.text ?? nodeData.label ?? 'Text Box').toString();
   const width = typeof nodeData.width === 'number' ? Math.max(100, nodeData.width) : 160;
   const fontSize = nodeData.fontSize || 'M';
   const textAlign = nodeData.textAlign || 'center';
@@ -21,7 +21,11 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
       ? `var(--${fillColor}-alpha, var(--${fillColor}))`
       : 'var(--node-fill)';
 
-  const strokeVal = strokeColor ? `var(--${strokeColor})` : 'var(--node-stroke)';
+  const strokeVal = selected
+    ? 'var(--selection)'
+    : strokeColor
+    ? `var(--${strokeColor})`
+    : 'var(--node-stroke)';
   const strokeDash = strokeStyle === 'dashed' ? '5 5' : undefined;
 
   const fontPx = fontSize === 'S' ? 12 : fontSize === 'L' ? 16 : 14;
@@ -91,7 +95,10 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
     }
   }, [isEditing]);
 
-  const points = boxPoints(width, height, 18);
+  const frame = useMemo(
+    () => getBoxTechFrameGeometry(width, height, 18),
+    [width, height]
+  );
 
   return (
     <div
@@ -153,15 +160,139 @@ export const BoxNode: React.FC<NodeProps> = ({ id, data, selected }) => {
           className="box-node-svg"
           viewBox={`0 0 ${width} ${height}`}
         >
+          {/* Main filled polygon body */}
           <polygon
-            points={points}
+            points={frame.points}
             className="box-node-polygon"
             style={{
               fill: fillStyle,
               stroke: strokeVal,
+              strokeWidth: 1.5,
               strokeDasharray: strokeDash,
             }}
           />
+
+          {/* Top & Bottom Floating Rails */}
+          <line
+            x1={frame.topMainRail.x1}
+            y1={frame.topMainRail.y1}
+            x2={frame.topMainRail.x2}
+            y2={frame.topMainRail.y2}
+            stroke={strokeVal}
+            strokeWidth={1.2}
+            opacity={0.85}
+          />
+          <line
+            x1={frame.topLeftNotch.x1}
+            y1={frame.topLeftNotch.y1}
+            x2={frame.topLeftNotch.x2}
+            y2={frame.topLeftNotch.y2}
+            stroke={strokeVal}
+            strokeWidth={1.2}
+            opacity={0.7}
+          />
+          <line
+            x1={frame.topRightNotch.x1}
+            y1={frame.topRightNotch.y1}
+            x2={frame.topRightNotch.x2}
+            y2={frame.topRightNotch.y2}
+            stroke={strokeVal}
+            strokeWidth={1.2}
+            opacity={0.7}
+          />
+
+          <line
+            x1={frame.bottomMainRail.x1}
+            y1={frame.bottomMainRail.y1}
+            x2={frame.bottomMainRail.x2}
+            y2={frame.bottomMainRail.y2}
+            stroke={strokeVal}
+            strokeWidth={1.2}
+            opacity={0.85}
+          />
+          <line
+            x1={frame.bottomLeftNotch.x1}
+            y1={frame.bottomLeftNotch.y1}
+            x2={frame.bottomLeftNotch.x2}
+            y2={frame.bottomLeftNotch.y2}
+            stroke={strokeVal}
+            strokeWidth={1.2}
+            opacity={0.7}
+          />
+          <line
+            x1={frame.bottomRightNotch.x1}
+            y1={frame.bottomRightNotch.y1}
+            x2={frame.bottomRightNotch.x2}
+            y2={frame.bottomRightNotch.y2}
+            stroke={strokeVal}
+            strokeWidth={1.2}
+            opacity={0.7}
+          />
+
+          {/* Left & Right Layered Chevrons (Wings) */}
+          <path
+            d={frame.leftOuterChevron}
+            fill="none"
+            stroke={strokeVal}
+            strokeWidth={1.4}
+            opacity={0.9}
+          />
+          <path
+            d={frame.leftInnerChevron}
+            fill="none"
+            stroke={strokeVal}
+            strokeWidth={1.2}
+            opacity={0.55}
+          />
+          <path
+            d={frame.rightOuterChevron}
+            fill="none"
+            stroke={strokeVal}
+            strokeWidth={1.4}
+            opacity={0.9}
+          />
+          <path
+            d={frame.rightInnerChevron}
+            fill="none"
+            stroke={strokeVal}
+            strokeWidth={1.2}
+            opacity={0.55}
+          />
+
+          {/* Shoulder Accent Ticks (Heavy corner joints) */}
+          {frame.shoulderTicks.map((tick, i) => (
+            <line
+              key={i}
+              x1={tick.x1}
+              y1={tick.y1}
+              x2={tick.x2}
+              y2={tick.y2}
+              stroke={strokeVal}
+              strokeWidth={tick.strokeWidth}
+              strokeLinecap="square"
+              opacity={0.95}
+            />
+          ))}
+
+          {/* Interior subtle circuit lines */}
+          {frame.circuitLines.map((circuit, i) => (
+            <g key={i} opacity={0.28}>
+              <line
+                x1={circuit.x1}
+                y1={circuit.y1}
+                x2={circuit.x2}
+                y2={circuit.y2}
+                stroke={strokeVal}
+                strokeWidth={1}
+              />
+              <circle
+                cx={circuit.dotX}
+                cy={circuit.dotY}
+                r={1.5}
+                fill={strokeVal}
+              />
+            </g>
+          ))}
         </svg>
 
         <div

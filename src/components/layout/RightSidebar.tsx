@@ -320,15 +320,13 @@ export const RightSidebar: React.FC = () => {
     const text = (data.text ?? data.label ?? '').toString();
     const fontSize = (data.fontSize || 'M') as 'S' | 'M' | 'L';
     const textAlign = (data.textAlign || 'center') as 'left' | 'center' | 'right';
-    const fill = (data.fill || 'transparent') as string;
     const strokeColor = (data.strokeColor || 'swatch-neutral') as string;
-    const strokeStyle = (data.strokeStyle || 'solid') as 'solid' | 'dashed';
     const width = typeof data.width === 'number' ? data.width : 160;
     const isLocked = Boolean(data.locked);
 
     return (
       <aside className="right-sidebar" aria-label="Properties panel">
-        <div className="sidebar-header">Box Properties</div>
+        <div className="sidebar-header">Text Box Properties</div>
         <div className="sidebar-content">
           <div className="prop-section">
             <FormRow label="Text">
@@ -337,7 +335,149 @@ export const RightSidebar: React.FC = () => {
                 rows={2}
                 value={text}
                 onChange={(e) => updateNodeData(node.id, { text: e.target.value })}
-                placeholder="Box text"
+                placeholder="Text Box text"
+              />
+            </FormRow>
+
+            <FormRow label="Font size">
+              <SegmentedControl
+                options={[
+                  { value: 'S', label: '12px' },
+                  { value: 'M', label: '14px' },
+                  { value: 'L', label: '16px' },
+                ]}
+                value={fontSize}
+                onChange={(val) => updateNodeData(node.id, { fontSize: val })}
+              />
+            </FormRow>
+
+            <FormRow label="Text align">
+              <SegmentedControl
+                options={[
+                  { value: 'left', label: <AlignLeft size={14} />, title: 'Align left' },
+                  { value: 'center', label: <AlignCenter size={14} />, title: 'Align center' },
+                  { value: 'right', label: <AlignRight size={14} />, title: 'Align right' },
+                ]}
+                value={textAlign}
+                onChange={(val) => updateNodeData(node.id, { textAlign: val })}
+              />
+            </FormRow>
+
+            <FormRow label="Stroke color">
+              <ColorSwatchPicker
+                value={strokeColor}
+                onChange={(val) => updateNodeData(node.id, { strokeColor: val })}
+              />
+            </FormRow>
+
+            <FormRow label="Width">
+              <div className="prop-slider-row">
+                <input
+                  type="range"
+                  min="100"
+                  max="400"
+                  step="10"
+                  className="prop-slider"
+                  value={width}
+                  onChange={(e) => updateNodeData(node.id, { width: Number(e.target.value) })}
+                />
+                <span className="prop-slider-val">{width}px</span>
+              </div>
+            </FormRow>
+
+            <div className="prop-row-dual">
+              <FormRow label="X Position">
+                <input
+                  type="number"
+                  className="prop-input"
+                  value={Math.round(node.position.x)}
+                  onChange={(e) =>
+                    updateNodePosition(node.id, {
+                      x: Number(e.target.value),
+                      y: node.position.y,
+                    })
+                  }
+                />
+              </FormRow>
+              <FormRow label="Y Position">
+                <input
+                  type="number"
+                  className="prop-input"
+                  value={Math.round(node.position.y)}
+                  onChange={(e) =>
+                    updateNodePosition(node.id, {
+                      x: node.position.x,
+                      y: Number(e.target.value),
+                    })
+                  }
+                />
+              </FormRow>
+            </div>
+
+            <FormRow label="Lock position" inline>
+              <button
+                type="button"
+                className={`lock-toggle-btn ${isLocked ? 'locked' : ''}`}
+                onClick={() => updateNodeData(node.id, { locked: !isLocked })}
+                title={isLocked ? 'Unlock position' : 'Lock position'}
+              >
+                {isLocked ? <Lock size={14} /> : <Unlock size={14} />}
+                <span>{isLocked ? 'Locked' : 'Unlocked'}</span>
+              </button>
+            </FormRow>
+          </div>
+
+          <div className="prop-actions">
+            <button
+              type="button"
+              className="action-btn duplicate-btn"
+              onClick={duplicateSelected}
+              title="Duplicate (Ctrl/Cmd+D)"
+            >
+              <Copy size={14} />
+              <span>Duplicate</span>
+            </button>
+            <button
+              type="button"
+              className="action-btn delete-btn"
+              onClick={deleteSelected}
+              title="Delete (Backspace/Delete)"
+            >
+              <Trash2 size={14} />
+              <span>Delete</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+    );
+  }
+
+  // Render Single Rectangle Node Selected
+  if (totalSelected === 1 && selectedNodes.length === 1 && selectedNodes[0].type === 'rectangle') {
+    const node = selectedNodes[0];
+    const data = node.data || {};
+    const text = (data.text ?? data.label ?? '').toString();
+    const fontSize = (data.fontSize || 'M') as 'S' | 'M' | 'L';
+    const textAlign = (data.textAlign || 'center') as 'left' | 'center' | 'right';
+    const fill = (data.fill || 'transparent') as string;
+    const strokeColor = (data.strokeColor || 'swatch-neutral') as string;
+    const strokeStyle = (data.strokeStyle || 'solid') as 'solid' | 'dashed' | 'dotted';
+    const width = typeof data.width === 'number' ? data.width : 180;
+    const height = typeof data.height === 'number' ? data.height : 100;
+    const isLocked = Boolean(data.locked);
+
+    return (
+      <aside className="right-sidebar" aria-label="Properties panel">
+        <div className="sidebar-header">Rectangle Properties</div>
+        <div className="sidebar-content">
+          <div className="prop-section">
+            <FormRow label="Text">
+              <textarea
+                className="prop-textarea"
+                rows={2}
+                value={text}
+                onChange={(e) => updateNodeData(node.id, { text: e.target.value })}
+                placeholder="Rectangle text"
               />
             </FormRow>
 
@@ -387,6 +527,7 @@ export const RightSidebar: React.FC = () => {
                 options={[
                   { value: 'solid', label: 'Solid' },
                   { value: 'dashed', label: 'Dashed' },
+                  { value: 'dotted', label: 'Dotted' },
                 ]}
                 value={strokeStyle}
                 onChange={(val) => updateNodeData(node.id, { strokeStyle: val })}
@@ -397,14 +538,29 @@ export const RightSidebar: React.FC = () => {
               <div className="prop-slider-row">
                 <input
                   type="range"
-                  min="100"
-                  max="400"
+                  min="40"
+                  max="600"
                   step="10"
                   className="prop-slider"
                   value={width}
                   onChange={(e) => updateNodeData(node.id, { width: Number(e.target.value) })}
                 />
                 <span className="prop-slider-val">{width}px</span>
+              </div>
+            </FormRow>
+
+            <FormRow label="Height">
+              <div className="prop-slider-row">
+                <input
+                  type="range"
+                  min="30"
+                  max="500"
+                  step="10"
+                  className="prop-slider"
+                  value={height}
+                  onChange={(e) => updateNodeData(node.id, { height: Number(e.target.value) })}
+                />
+                <span className="prop-slider-val">{height}px</span>
               </div>
             </FormRow>
 

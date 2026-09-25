@@ -23,6 +23,7 @@ import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { getComponentByType } from '../registry';
 import { IconNode } from './nodes/IconNode';
 import { BoxNode } from './nodes/BoxNode';
+import { RectangleNode } from './nodes/RectangleNode';
 import { OrthogonalEdge } from './edges/OrthogonalEdge';
 import { OrthogonalConnectionLine } from './edges/OrthogonalConnectionLine';
 import { HelperLinesRenderer } from './HelperLines';
@@ -110,6 +111,7 @@ const CanvasInner: React.FC = () => {
     () => ({
       icon: IconNode,
       box: BoxNode,
+      rectangle: RectangleNode,
     }),
     []
   );
@@ -236,8 +238,26 @@ const CanvasInner: React.FC = () => {
           },
           data: {
             componentType: def.type,
-            text: 'Service Box',
+            text: 'Text Box',
             width: 160,
+          },
+        };
+      } else if (def.nodeKind === 'rectangle') {
+        newNode = {
+          id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          type: 'rectangle',
+          position: {
+            x: position.x - 90,
+            y: position.y - 50,
+          },
+          data: {
+            componentType: def.type,
+            text: '',
+            width: 180,
+            height: 100,
+            fill: 'transparent',
+            strokeColor: 'swatch-neutral',
+            strokeStyle: 'solid',
           },
         };
       } else {
@@ -293,8 +313,26 @@ const CanvasInner: React.FC = () => {
           },
           data: {
             componentType: def.type,
-            text: 'Service Box',
+            text: 'Text Box',
             width: 160,
+          },
+        };
+      } else if (def.nodeKind === 'rectangle') {
+        newNode = {
+          id: `node-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          type: 'rectangle',
+          position: {
+            x: position.x - 90,
+            y: position.y - 50,
+          },
+          data: {
+            componentType: def.type,
+            text: '',
+            width: 180,
+            height: 100,
+            fill: 'transparent',
+            strokeColor: 'swatch-neutral',
+            strokeStyle: 'solid',
           },
         };
       } else {

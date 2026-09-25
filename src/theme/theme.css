@@ -804,9 +804,101 @@ button {
   stroke-width: 2;
 }
 
+/* Rectangle Node Custom Styling */
+.rectangle-node-container {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.rectangle-node-shape {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rectangle-node-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+
+.rectangle-node-rect {
+  transition: fill 150ms ease, stroke 150ms ease;
+}
+
+.rectangle-node-text-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.rectangle-node-text {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: none;
+  cursor: text;
+}
+
+.rectangle-node-textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  line-height: 1.35;
+  padding: 0;
+  margin: 0;
+}
+
+/* Rectangle Node Handles */
+.rectangle-node-handle {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: var(--accent) !important;
+  border: 1px solid var(--bg-panel) !important;
+  border-radius: 50% !important;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  z-index: 10;
+}
+
+.rectangle-node-container:hover .rectangle-node-handle,
+.rectangle-node-container.selected .rectangle-node-handle {
+  opacity: 1;
+}
+
 /* Arrow Mode & Handles */
 .arrow-mode-active .icon-node-handle,
-.arrow-mode-active .box-node-handle {
+.arrow-mode-active .box-node-handle,
+.arrow-mode-active .rectangle-node-handle {
   opacity: 1 !important;
 }
 
