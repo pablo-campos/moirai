@@ -207,10 +207,11 @@
   - Updated [RightSidebar.tsx](file:///Users/pablocampos/Development/Repositories/moirai/src/components/layout/RightSidebar.tsx):
     - Renamed properties panel header to "Text Box Properties" and removed "Fill color" and "Stroke style" controls.
     - Added dedicated Rectangle properties panel with Text, Font size, Text align, Fill color, Stroke color, Stroke style (Solid, Dashed, Dotted), Width & Height sliders.
-  - Added Rectangle styling in [theme.css](file:///Users/pablocampos/Development/Repositories/moirai/src/theme/theme.css) and updated [diagramStore.ts](file:///Users/pablocampos/Development/Repositories/moirai/src/store/diagramStore.ts).
+  - Updated Empty Canvas hint dialog: doubled brand logo size from 56px to 112px, increased brand title font size to 22px, and adjusted spacing and card padding.
   - Verified `npm run build` and `npm run check:colors` pass with zero errors.
   - Verified in browser at http://localhost:5173 that Rectangle is first in Basics, Text Box is second, and properties panels render with updated options.
 - **Known Issues**: None.
+
 
 
 
