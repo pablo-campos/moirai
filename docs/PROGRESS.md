@@ -174,3 +174,10 @@
   - Verified visual appearance in browser at http://localhost:5173 across dark and light themes.
 - **Known Issues**: None.
 
+### Logo & Favicon Flare Dot Removal
+- **What was done**:
+  - Removed the specular flare / white light dot and associated gradient from [logo.svg](file:///Users/pablocampos/Development/Repositories/moirai/public/logo.svg) and [favicon.svg](file:///Users/pablocampos/Development/Repositories/moirai/public/favicon.svg), leaving a clean eclipse corona and crescent motif.
+  - Verified `npm run build` and `npm run check:colors` pass with zero errors.
+  - Verified in browser at http://localhost:5173.
+- **Known Issues**: None.
+
